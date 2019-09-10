@@ -10,7 +10,7 @@ class Asset:
 
     def create_asset(self):
         """
-        Creates an asset domain's asset
+        Creates an asset in the domain's asset
         :return:
         """
         tx = IROHA_ADMIN.transaction(
