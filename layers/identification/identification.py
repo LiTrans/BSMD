@@ -72,7 +72,6 @@ class User:
     def get_all_details(self):
         """
         Consult all details of the node
-        :param user: (obj) Object of the class User
         :return: data: (json) solicited details of the user
         Return example:
         {
@@ -226,7 +225,3 @@ class User:
         ])
         IrohaCrypto.sign_transaction(tx, self.private_key)
         send_transaction_and_print_status(tx)
-
-
-
-
