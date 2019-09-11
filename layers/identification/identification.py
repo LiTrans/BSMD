@@ -170,8 +170,7 @@ class User:
         Return example:
         {
             "nodeA@domainC":{
-                "FederatingParam":"35.242553",
-                "Loop":"3"
+                "FederatingParam":"35.242553"
             }
         }
         """
@@ -198,8 +197,6 @@ class User:
         :param detail_value: (str) Value of the detail
         :param private_key: (str) key to sign the transaction
         :return: null:
-        Usage example:
-        set_detail('age', '33')
         """
         print(self.name, self.domain, self.public_key, private_key, detail_key, detail_value)
         account_id = self.name + '@' + self.domain
@@ -225,8 +222,6 @@ class User:
         :param detail_value: (str) Value of the detail
         :param private_key: (str) key to sign the transaction
         :return: null:
-        Usage example:
-        set_detail(Lucas, 'key', 'age', '33')
         """
         account = self.name + '@' + self.domain
         iroha = Iroha(account)
