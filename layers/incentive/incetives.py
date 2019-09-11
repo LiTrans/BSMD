@@ -1,5 +1,4 @@
 
-
 class Asset:
     def __init__(self, name, precision, domain):
         """
@@ -11,8 +10,3 @@ class Asset:
         self.name = name
         self.precision = precision
         self.domain = domain.id_name
-
-
-
-
-
