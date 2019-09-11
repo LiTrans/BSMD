@@ -88,7 +88,7 @@ class User:
         {
             "node@domainA":{
                 "Age":"35",
-                "Name":"Quetzacoatl"
+                "Name":"Quetzalcoatl"
             },
             "node@domainB":{
                 "Location":"35.3333535,-45.2141556464",
