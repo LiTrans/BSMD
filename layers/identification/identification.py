@@ -1,26 +1,70 @@
-
+import json
 from iroha import Iroha, IrohaCrypto, IrohaGrpc
 from iroha.primitive_pb2 import can_set_my_account_detail
 from utils.iroha import send_transaction_and_print_status
 
 
+
 class User:
 
-    def __init__(self, private_key, name, domain, ip):
+    def __init__(self, private_key, name, domain, ip, public_info):
         """
         Object user.
         :param private_key: (str) private key of the user. This is not save in the class is just used to generate
                             a public_key. In other functions the private_key must be used to sign transactions. You can
                             generate private keys with IrohaCrypto.private_key()
         :param name: (str) name of the user (lower case)
-        :param domain: (obj) domain where the user will live
+        :param domain: (obj) domain where the user will live. If
         :param ip: (ip_address) ip of one node hosting the blockchain
+        :param public_info: (json) public information of the user. If domain is public this field can't be null. Example
+                           {
+                              "alias": "David",
+                              "type": "person"
+                            }
         """
         self.public_key = IrohaCrypto.derive_public_key(private_key)
         self.name = name
         self.domain = domain.id_name
         ip_address = ip + ':50051'
         self.network = IrohaGrpc(ip_address)
+        if domain.id_name == 'public':
+            self.public_info = public_info
+
+    # ###############
+    # create my own account
+    # ###############
+    def create_account(self, user):
+        """
+        Create a personal account in a domain. In the public domain all your public information is automatically
+        populated
+        :return: null:
+        """
+        tx = self.iroha.transaction(
+            [self.iroha.command('CreateAccount',
+                                account_name=user.name,
+                                domain_id=user.domain,
+                                public_key=user.public_key)])
+        IrohaCrypto.sign_transaction(tx, self.private_key)
+        send_transaction_and_print_status(tx, self.network)
+
+        if user.domain == 'public':
+            self.set_detail(self, 'public', self.public_info, self.private_key)
+
+    # ###############
+    # Domain related functions
+    # ###############
+    def create_domain(self, domain):
+        """
+        Creates a domain for personal use. You can create a domain for a particular process, e.g., Federated Learning
+        :param domain: (obj) domain to be created
+        """
+        tx = self.iroha.transaction(
+            [self.iroha.command('CreateDomain',
+                                domain_id=domain.id_name,
+                                default_role=domain.default_role)])
+
+        IrohaCrypto.sign_transaction(tx, self.private_key)
+        send_transaction_and_print_status(tx, self.network)
 
     # ###############
     # asset functions
@@ -250,6 +294,25 @@ class User:
         iroha = Iroha(my_id_account)
         tx = iroha.transaction([
             iroha.command('GrantPermission',
+                          account_id=grant_account_id,
+                          permission=can_set_my_account_detail)
+        ],
+            creator_account=my_id_account)
+        IrohaCrypto.sign_transaction(tx, private_key)
+        send_transaction_and_print_status(tx, self.network)
+
+    def revoke_access_set_details_to(self, user, private_key):
+        """
+        Revoke permission to a node to set details on your identification
+        :param user: (obj) user you want to revoke permissions to set details on your behalf
+        :param private_key: (str) key to sign the transaction
+        :return:
+        """
+        my_id_account = self.name + '@' + self.domain
+        grant_account_id = user.name + '@' + user.domain
+        iroha = Iroha(my_id_account)
+        tx = iroha.transaction([
+            iroha.command('RevokePermission',
                           account_id=grant_account_id,
                           permission=can_set_my_account_detail)
         ],
