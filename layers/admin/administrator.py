@@ -9,7 +9,7 @@ class Admin:
         :param ip: (ip_address) ip of one node hosting the Blockchain
         """
         self.private_key = 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70'
-        self.iroha = Iroha('admin@test')
+        self.iroha = Iroha('admin@public')
         ip_address = ip + ':50051'
         self.network = IrohaGrpc(ip_address)
 
@@ -64,7 +64,7 @@ class Admin:
         dest_account_id = user.name + '@' + user.domain
         tx = self.iroha.transaction([
             self.iroha.command('TransferAsset',
-                               src_account_id='admin@test',
+                               src_account_id='admin@public',
                                dest_account_id=dest_account_id,
                                asset_id=asset_id,
                                description='asset created for node',
