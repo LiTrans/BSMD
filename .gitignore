@@ -105,3 +105,13 @@ venv.bak/
 
 # pycharm
 .idea/
+
+.npy
+.key
+.pem
+/layers/communication/server.key
+/layers/communication/server.pem
+/logs_dir/
+/use_cases/federated_learning/train_sets/
+/logger-weights.txt
+/logger-weights-worker.txt
