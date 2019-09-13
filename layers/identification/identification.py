@@ -1,8 +1,7 @@
-import json
+
 from iroha import Iroha, IrohaCrypto, IrohaGrpc
 from iroha.primitive_pb2 import can_set_my_account_detail
 from utils.iroha import send_transaction_and_print_status
-
 
 
 class User:
@@ -33,37 +32,42 @@ class User:
     # ###############
     # create my own account
     # ###############
-    def create_account(self, user):
+    def create_account(self, user, private_key):
         """
         Create a personal account in a domain. In the public domain all your public information is automatically
         populated
         :return: null:
         """
-        tx = self.iroha.transaction(
-            [self.iroha.command('CreateAccount',
-                                account_name=user.name,
-                                domain_id=user.domain,
-                                public_key=user.public_key)])
-        IrohaCrypto.sign_transaction(tx, self.private_key)
+        account_id = self.name + '@' + self.domain
+        iroha = Iroha(account_id)
+        tx = iroha.transaction(
+            [iroha.command('CreateAccount',
+                           account_name=user.name,
+                           domain_id=user.domain,
+                           public_key=user.public_key)])
+        IrohaCrypto.sign_transaction(tx, private_key)
         send_transaction_and_print_status(tx, self.network)
 
         if user.domain == 'public':
-            self.set_detail(self, 'public', self.public_info, self.private_key)
+            self.set_detail('public', self.public_info, private_key)
 
     # ###############
     # Domain related functions
     # ###############
-    def create_domain(self, domain):
+    def create_domain(self, domain, private_key):
         """
         Creates a domain for personal use. You can create a domain for a particular process, e.g., Federated Learning
         :param domain: (obj) domain to be created
+        :param private_key: (str) key to sign the transaction
         """
-        tx = self.iroha.transaction(
-            [self.iroha.command('CreateDomain',
-                                domain_id=domain.id_name,
-                                default_role=domain.default_role)])
+        account_id = self.name + '@' + self.domain
+        iroha = Iroha(account_id)
+        tx = iroha.transaction(
+            [iroha.command('CreateDomain',
+                           domain_id=domain.id_name,
+                           default_role=domain.default_role)])
 
-        IrohaCrypto.sign_transaction(tx, self.private_key)
+        IrohaCrypto.sign_transaction(tx, private_key)
         send_transaction_and_print_status(tx, self.network)
 
     # ###############
@@ -319,4 +323,3 @@ class User:
             creator_account=my_id_account)
         IrohaCrypto.sign_transaction(tx, private_key)
         send_transaction_and_print_status(tx, self.network)
-
