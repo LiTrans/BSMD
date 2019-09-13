@@ -5,6 +5,9 @@ ENCODING = 'utf-8'
 
 
 class Receiver(threading.Thread):
+    """
+    This class is for p2p communication between two nodes. This class will receive messages
+    """
 
     def __init__(self, my_host, my_port):
         threading.Thread.__init__(self, name="messenger_receiver")
@@ -34,7 +37,9 @@ class Receiver(threading.Thread):
 
 
 class Sender(threading.Thread):
-
+    """
+        This class is for p2p communication between two nodes. This class will send messages
+    """
     def __init__(self, my_friends_host, my_friends_port):
         threading.Thread.__init__(self, name="messenger_sender")
         self.host = my_friends_host
