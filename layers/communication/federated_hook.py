@@ -96,7 +96,7 @@ class _FederatedHook(tf.train.SessionRunHook):
       the averaged weights with which they will continue training.
       """
 
-    def __init__(self, is_chief, worker_name, private_ip, public_ip, private_key, list_of_workers,
+    def __init__(self, is_chief, name, private_ip, public_ip, private_key, list_of_workers,
                  wait_time=30, interval_steps=100):
         """
         Constructs a FederatedHook object
@@ -114,7 +114,7 @@ class _FederatedHook(tf.train.SessionRunHook):
         """
 
         self._is_chief = is_chief
-        self._worker_name = worker_name
+        self._name = name
         self._private_ip = private_ip.split(':')[0]
         self._private_port = int(private_ip.split(':')[1])
         self._public_ip = public_ip.split(':')[0]
@@ -370,7 +370,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                     print('SENDING Worker: ' + address[0] + ':' + str(address[1]))
 
                     self._send_np_array(session.run(tf.trainable_variables()), connection_socket, 0, self.num_workers,
-                                        self._worker_name, self._private_key, 'first_loop_federated_learning',
+                                        self._name, self._private_key, 'first_loop_federated_learning',
                                         self._list_of_workers)
                     print('SENT Worker {}'.format(len(users)))
                     users.append(connection_socket)
@@ -479,7 +479,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                     try:
                         start = time.time()
 
-                        self._send_np_array(rearranged_weights, user, step_value, self.num_workers,self._worker_name,
+                        self._send_np_array(rearranged_weights, user, step_value, self.num_workers,self._name,
                                             self._private_key, names[i])
                         end = time.time()
                         user.close()
@@ -501,7 +501,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                 print('Sending weights')
                 value = session.run(tf.trainable_variables())
 
-                self._send_np_array(value, worker_socket, step_value, self.num_workers, self._worker_name,
+                self._send_np_array(value, worker_socket, step_value, self.num_workers, self._name,
                                     self._private_key, CHIEF_NAME)
 
                 name, broadcasted_weights = self._get_np_array(worker_socket)
