@@ -83,9 +83,28 @@
                                 "can_set_quorum",
                                 "can_transfer",
 				"can_create_domain",
-				"can_create_role",
 				"can_get_blocks",
+				"can_create_account",
 				"can_get_domain_acc_detail"					
+                             ]
+                          }
+                       },
+                       {
+                          "createRole":{
+                             "roleName":"user_domain",
+                             "permissions":[
+                                "can_add_signatory",
+                                "can_get_my_acc_detail",
+                                "can_get_my_acc_txs",
+                                "can_get_my_account",
+                                "can_get_my_signatories",
+                                "can_get_my_txs",
+                                "can_grant_can_add_my_signatory",
+                                "can_grant_can_remove_my_signatory",
+                                "can_grant_can_set_my_account_detail",
+                                "can_grant_can_set_my_quorum",
+                                "can_remove_signatory",
+                                "can_set_quorum",					
                              ]
                           }
                        },
