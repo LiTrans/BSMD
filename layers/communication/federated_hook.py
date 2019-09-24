@@ -29,6 +29,7 @@ import tensorflow as tf
 import numpy as np
 import json
 import hashlib
+from utils.iroha import set_detail_to_node
 
 SEND_RECEIVE_CONF = lambda x: x
 SEND_RECEIVE_CONF.key = b'4C5jwen4wpNEjBeq1YmdBayIQ1oD'
@@ -38,6 +39,7 @@ SEND_RECEIVE_CONF.error = b'error'
 SEND_RECEIVE_CONF.recv = b'reciv'
 SEND_RECEIVE_CONF.signal = b'go!go!go!'
 SEND_RECEIVE_CONF.buffer = 8192*2
+CHIEF_NAME = ''
 
 SSL_CONF = lambda x: x
 SSL_CONF.key_path = 'layers/communication/server.key'
@@ -94,26 +96,31 @@ class _FederatedHook(tf.train.SessionRunHook):
       the averaged weights with which they will continue training.
       """
 
-    def __init__(self, is_chief, worker_name, private_ip, public_ip, wait_time=30, interval_steps=100):
+    def __init__(self, is_chief, worker_name, private_ip, public_ip, private_key, list_of_workers,
+                 wait_time=30, interval_steps=100):
+        """
+        Constructs a FederatedHook object
+        :param is_chief (bool): whether it is going to act as chief or not.
+        :param worker_name (str): name of the node in the BSMD
+        :param private_ip (str): complete local ip in which the chief is going to serve its socket.
+                                Example: 172.134.65.123:7777
+        :param public_ip (str): ip to which the workers are going to connect.
+        :param private_key (str): private key of the node for signing the transactions
+        :param list_of_workers (list): list of all the nodes that are willing to participate. In theory the chief node
+                                        knows the list as he creates the domain and accounts for the participants
+        :param wait_time (int, optional): how long the chief should wait at the beginning for the workers to connect.
+        :param interval_steps (int, optional): number of steps between two "average op", which specifies
+                                            how frequent a model synchronization is performed
+        """
 
-        """Construcs a FederatedHook object
-            Args:
-              is_chief (bool): whether it is going to act as chief or not.
-              private_ip (str): complete local ip in which the chief is going to
-                    serve its socket. Example: 172.134.65.123:7777
-              public_ip (str): ip to which the workers are going to connect.
-              interval_steps (int, optional): number of steps between two
-                    "average op", which specifies how frequent a model
-                    synchronization is performed.
-              wait_time: how long the chief should wait at the beginning
-                    for the workers to connect.
-         """
         self._is_chief = is_chief
         self._worker_name = worker_name
         self._private_ip = private_ip.split(':')[0]
         self._private_port = int(private_ip.split(':')[1])
         self._public_ip = public_ip.split(':')[0]
         self._public_port = int(public_ip.split(':')[1])
+        self._private_key = private_key
+        self._list_of_workers = list_of_workers
         self._interval_steps = interval_steps
         self._wait_time = wait_time
         self._nex_task_index = 0
@@ -233,24 +240,28 @@ class _FederatedHook(tf.train.SessionRunHook):
                   established.
          """
         message = self._receiving_subroutine(connection_socket)
-        name, final_image = pickle.loads(message)
-        return name, final_image
+        received_from, final_image = pickle.loads(message)
+        return received_from, final_image
 
     @staticmethod
-    def _send_np_array(arrays_to_send, connection_socket, sender, iteration, tot_workers, receiver):
+    def _send_np_array(arrays_to_send, connection_socket, iteration, tot_workers, sender, private_key, receiver,
+                       list_participants=[]):
 
         """
         Send weights to nodes via a socket. Also write the transaction in the BSMD
         :param arrays_to_send: weight to be send
         :param connection_socket:
-        :param sender: name of the sender
         :param iteration: iteration number in the federated process
         :param tot_workers: total number of node in the federated process
+        :param sender: name of the node sending the information
+        :param private_key: private key of the node sending the transaction
         :param receiver: name of the receiver
+        :param list_participants (array, optional): list of participants in the federated process. This variable is
+                                                    just need in the first loop
         :return:
         """
 
-        serialized = pickle.dumps([sender,arrays_to_send])
+        serialized = pickle.dumps([sender, arrays_to_send])
 
         transaction_data = dict()
         transaction_data['Process'] = 'BSMD-ML'
@@ -264,65 +275,15 @@ class _FederatedHook(tf.train.SessionRunHook):
         json_in_ledger = str(transaction_json)
         transaction = json_in_ledger.replace('"', '')
 
+        # Send transactions to the blockchain
+        detail_key = sender + '_weight'
+        if iteration == 0:
+            for rec in list_participants:
+                set_detail_to_node(sender, rec, private_key, detail_key, transaction)
+        else:
+            set_detail_to_node(sender, receiver, private_key, detail_key, transaction)
 
-        # worker_names = [iroha_config.worker1_account_id, iroha_config.worker2_account_id,
-        #                 iroha_config.worker3_account_id, iroha_config.worker4_account_id,
-        #                 iroha_config.worker5_account_id, iroha_config.worker6_account_id,
-        #                 iroha_config.worker7_account_id, iroha_config.worker8_account_id,
-        #                 iroha_config.worker9_account_id]
-        #
-        # worker = int(connection_socket.fileno()) - 10
-        # if sender == 'chief':
-        #     if receiver == 'first':
-        #         start = time.time()
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_chief, worker_names[0],
-        #                                            iroha_config.chief_private_key, 'chief_weight', transaction)
-        #         end = time.time()
-        #         logger = open('logger-ledger.txt', 'a')
-        #         logger.write('ledger txn: ' + str(end - start) + '\n')
-        #         logger.close()
-        #     else:
-        #         start = time.time()
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_chief, str(receiver) + '@' + iroha_config.domain_id,
-        #                                            iroha_config.chief_private_key, 'chief_weight', transaction)
-        #         end = time.time()
-        #         logger = open('logger-ledger.txt', 'a')
-        #         logger.write('ledger txn: ' + str(end - start) + '\n')
-        #         logger.close()
-        # else:
-        #     start = time.time()
-        #     if sender == 'worker1':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker1, iroha_config.chief_account_id,
-        #                                            iroha_config.worker1_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker2':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker2, iroha_config.chief_account_id,
-        #                                            iroha_config.worker2_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker3':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker3, iroha_config.chief_account_id,
-        #                                            iroha_config.worker3_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker4':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker4, iroha_config.chief_account_id,
-        #                                            iroha_config.worker4_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker5':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker5, iroha_config.chief_account_id,
-        #                                            iroha_config.worker5_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker6':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker6, iroha_config.chief_account_id,
-        #                                            iroha_config.worker6_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker7':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker7, iroha_config.chief_account_id,
-        #                                            iroha_config.worker7_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker8':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker8, iroha_config.chief_account_id,
-        #                                            iroha_config.worker8_private_key, str(sender) + '_weight', transaction)
-        #     if sender == 'worker9':
-        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker9, iroha_config.chief_account_id,
-        #                                            iroha_config.worker9_private_key, str(sender) + '_weight', transaction)
-        #     end = time.time()
-        #     logger = open('logger-ledger-worker.txt', 'a')
-        #     logger.write('ledger txn: ' + str(end - start) + '\n')
-        #     logger.close()
-
+        # Send weight using a socket
         signature = hmac.new(SEND_RECEIVE_CONF.key, serialized, SEND_RECEIVE_CONF.hashfunction).digest()
         assert len(signature) == SEND_RECEIVE_CONF.hashsize
         message = signature + serialized
@@ -407,9 +368,10 @@ class _FederatedHook(tf.train.SessionRunHook):
                     break
                 try:
                     print('SENDING Worker: ' + address[0] + ':' + str(address[1]))
-                    # _send_np_array(arrays_to_send, connection_socket, sender, iteration, tot_workers, receiver):
-                    self._send_np_array(session.run(tf.trainable_variables()), connection_socket, self._worker_name, 0,
-                                        self.num_workers, 'first')
+
+                    self._send_np_array(session.run(tf.trainable_variables()), connection_socket, 0, self.num_workers,
+                                        self._worker_name, self._private_key, 'first_loop_federated_learning',
+                                        self._list_of_workers)
                     print('SENT Worker {}'.format(len(users)))
                     users.append(connection_socket)
                     addresses.append(address)
@@ -432,7 +394,7 @@ class _FederatedHook(tf.train.SessionRunHook):
         else:
             print('Starting Initialization')
             client_socket = self._start_socket_worker()
-            name, broadcasted_weights = self._get_np_array(client_socket)
+            CHIEF_NAME, broadcasted_weights = self._get_np_array(client_socket)
             feed_dict = {}
             for placeh, brweigh in zip(self._placeholders, broadcasted_weights):
                 feed_dict[placeh] = brweigh
@@ -516,13 +478,10 @@ class _FederatedHook(tf.train.SessionRunHook):
                 for i, user in enumerate(users):
                     try:
                         start = time.time()
-                        # _send_np_array(arrays_to_send, connection_socket, sender, iteration, tot_workers, receiver):
-                        self._send_np_array(rearranged_weights, user, self._worker_name, step_value, self.num_workers,
-                                            names[i])
+
+                        self._send_np_array(rearranged_weights, user, step_value, self.num_workers,self._worker_name,
+                                            self._private_key, names[i])
                         end = time.time()
-                        logger = open('logger-weights.txt', 'a')
-                        logger.write('send weights: ' + str(end - start) + '\n')
-                        logger.close()
                         user.close()
                     except (ConnectionResetError, BrokenPipeError):
                         print('Fallen Worker: ' + addresses[i][0] + ':' + str(address[i][1]))
@@ -541,12 +500,10 @@ class _FederatedHook(tf.train.SessionRunHook):
                 worker_socket = self._start_socket_worker()
                 print('Sending weights')
                 value = session.run(tf.trainable_variables())
-                start = time.time()
-                self._send_np_array(value, worker_socket, self._worker_name, step_value, self.num_workers, 'chief')
-                end = time.time()
-                logger = open('logger-weights-worker.txt', 'a')
-                logger.write('send weights: ' + str(end - start) + '\n')
-                # logger.close()
+
+                self._send_np_array(value, worker_socket, step_value, self.num_workers, self._worker_name,
+                                    self._private_key, CHIEF_NAME)
+
                 name, broadcasted_weights = self._get_np_array(worker_socket)
                 feed_dict = {}
                 for placeh, brweigh in zip(self._placeholders, broadcasted_weights):
