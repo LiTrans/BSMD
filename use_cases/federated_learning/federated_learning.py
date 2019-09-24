@@ -20,9 +20,9 @@ CHIEF_PRIVATE_IP = 'localhost:7777'  # Private IP of the chief worker
 flags = tf.app.flags
 
 flags.DEFINE_boolean("is_chief", False, "True if this worker is chief")
-flags.DEFINE_string("worker_name", None, "worker name: chief, worker1, worker2, worker3... worker8, worker9")
-flags.DEFINE_string("file_X", None, "file name: X_Worker_1, X_Worker_2, X_Worker_3... X_Worker_10")
-flags.DEFINE_string("file_Y", None, "file name: Y_Worker_1, Y_Worker_2, Y_Worker_3... Y_Worker_10")
+flags.DEFINE_string("name", None, "name of the node in the BSMD")
+flags.DEFINE_string("file_X", None, "X information file of the node")
+flags.DEFINE_string("file_Y", None, "Y information file of the node")
 
 # Disable GPU for all workers in local testing.
 # Enable it when testing in different computers
@@ -30,8 +30,11 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
 # Create the custom hook
 FLAGS = flags.FLAGS
-federated_hook = _FederatedHook(FLAGS.is_chief, FLAGS.worker_name, CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, WAIT_TIME,
-                                INTERVAL_STEPS)
+
+list_of_workers = ['alan', 'juan', 'pedro']
+
+federated_hook = _FederatedHook(FLAGS.is_chief, FLAGS.name, CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, list_of_workers,
+                                WAIT_TIME, INTERVAL_STEPS)
 
 # parameters definition
 num_channels_ensemble = [5]
