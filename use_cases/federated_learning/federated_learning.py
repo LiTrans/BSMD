@@ -21,6 +21,8 @@ flags = tf.app.flags
 
 flags.DEFINE_boolean("is_chief", False, "True if this worker is chief")
 flags.DEFINE_string("name", None, "name of the node in the BSMD")
+flags.DEFINE_string("domain", None, "name of the domain")
+flags.DEFINE_string("ip", None, "ip address for connecting to the BSMD")
 flags.DEFINE_string("file_X", None, "X information file of the node")
 flags.DEFINE_string("file_Y", None, "Y information file of the node")
 
@@ -34,7 +36,7 @@ FLAGS = flags.FLAGS
 list_of_workers = ['alan', 'juan', 'pedro']
 
 federated_hook = _FederatedHook(FLAGS.is_chief, FLAGS.name, CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, list_of_workers,
-                                WAIT_TIME, INTERVAL_STEPS)
+                                FLAGS.domain, FLAGS.ip, WAIT_TIME, INTERVAL_STEPS)
 
 # parameters definition
 num_channels_ensemble = [5]
