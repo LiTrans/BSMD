@@ -65,3 +65,36 @@ def set_detail_to_node(sender, receiver, private_key, detail_key, detail_value, 
     ])
     IrohaCrypto.sign_transaction(tx, private_key)
     send_transaction_and_print_status(tx, network)
+
+
+def get_a_detail_written_by(name, writer, private_key, detail_key, domain, ip):
+    """
+    Consult a details of the node writen by other node
+    :param name: (str) name of the node consulting the information
+    :param writer: (str) name of the node who write the detail
+    :param private_key: (str) Private key of the user
+    :param detail_key: (str)  Name of the detail we want to consult
+    :param domain: (str) Name of the domain
+    :param ip: (ip) address for connecting to the BSMD
+    :return:
+        {
+           "nodeA@domain":{
+                 "Age":"35"
+        }
+}
+    """
+
+    account_id = name + '@' + domain
+    user_id = writer + '@' + domain
+    iroha = Iroha(account_id)
+    ip_address = ip + ':50051'
+    network = IrohaGrpc(ip_address)
+    query = iroha.query('GetAccountDetail',
+                        account_id=account_id,
+                        key=detail_key,
+                        writer=user_id)
+    IrohaCrypto.sign_query(query, private_key)
+    response = network.send_query(query)
+    data = response.account_detail_response
+    print('Account id = {}, details = {}'.format(account_id, data.detail))
+    return data.detail
