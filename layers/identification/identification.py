@@ -210,7 +210,7 @@ class User:
 
     def get_a_detail_written_by(self, user, detail_key, private_key):
         """
-        Consult all details of the node
+        Consult a details of the node writen by other node
         :param private_key: (str) key to sign the transaction
         :param user: (obj) user who write information on your identification
         :param detail_key: (str) name of the detail to be consulted

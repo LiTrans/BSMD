@@ -96,7 +96,7 @@ class _FederatedHook(tf.train.SessionRunHook):
       the averaged weights with which they will continue training.
       """
 
-    def __init__(self, is_chief, name, private_ip, public_ip, private_key, list_of_workers,
+    def __init__(self, is_chief, name, private_ip, public_ip, private_key, list_of_workers, domain, ip,
                  wait_time=30, interval_steps=100):
         """
         Constructs a FederatedHook object
@@ -108,6 +108,8 @@ class _FederatedHook(tf.train.SessionRunHook):
         :param private_key (str): private key of the node for signing the transactions
         :param list_of_workers (list): list of all the nodes that are willing to participate. In theory the chief node
                                         knows the list as he creates the domain and accounts for the participants
+        :param domain (str): name of the domain
+        :param ip (str): ip address for connecting to the BSMD
         :param wait_time (int, optional): how long the chief should wait at the beginning for the workers to connect.
         :param interval_steps (int, optional): number of steps between two "average op", which specifies
                                             how frequent a model synchronization is performed
@@ -121,6 +123,8 @@ class _FederatedHook(tf.train.SessionRunHook):
         self._public_port = int(public_ip.split(':')[1])
         self._private_key = private_key
         self._list_of_workers = list_of_workers
+        self._domain = domain
+        self._ip = ip
         self._interval_steps = interval_steps
         self._wait_time = wait_time
         self._nex_task_index = 0
@@ -244,8 +248,8 @@ class _FederatedHook(tf.train.SessionRunHook):
         return received_from, final_image
 
     @staticmethod
-    def _send_np_array(arrays_to_send, connection_socket, iteration, tot_workers, sender, private_key, receiver,
-                       list_participants=[]):
+    def _send_np_array(arrays_to_send, connection_socket, iteration, tot_workers, sender, private_key, receiver, domain,
+                       ip, list_participants=[]):
 
         """
         Send weights to nodes via a socket. Also write the transaction in the BSMD
@@ -279,9 +283,9 @@ class _FederatedHook(tf.train.SessionRunHook):
         detail_key = sender + '_weight'
         if iteration == 0:
             for rec in list_participants:
-                set_detail_to_node(sender, rec, private_key, detail_key, transaction)
+                set_detail_to_node(sender, rec, private_key, detail_key, transaction, domain, ip)
         else:
-            set_detail_to_node(sender, receiver, private_key, detail_key, transaction)
+            set_detail_to_node(sender, receiver, private_key, detail_key, transaction, domain, ip)
 
         # Send weight using a socket
         signature = hmac.new(SEND_RECEIVE_CONF.key, serialized, SEND_RECEIVE_CONF.hashfunction).digest()
@@ -370,8 +374,8 @@ class _FederatedHook(tf.train.SessionRunHook):
                     print('SENDING Worker: ' + address[0] + ':' + str(address[1]))
 
                     self._send_np_array(session.run(tf.trainable_variables()), connection_socket, 0, self.num_workers,
-                                        self._name, self._private_key, 'first_loop_federated_learning',
-                                        self._list_of_workers)
+                                        self._name, self._private_key, 'first_loop_federated_learning', self._domain,
+                                        self._ip, self._list_of_workers)
                     print('SENT Worker {}'.format(len(users)))
                     users.append(connection_socket)
                     addresses.append(address)
@@ -479,8 +483,8 @@ class _FederatedHook(tf.train.SessionRunHook):
                     try:
                         start = time.time()
 
-                        self._send_np_array(rearranged_weights, user, step_value, self.num_workers,self._name,
-                                            self._private_key, names[i])
+                        self._send_np_array(rearranged_weights, user, step_value, self.num_workers, self._name,
+                                            self._private_key, self._domain, self._ip, names[i])
                         end = time.time()
                         user.close()
                     except (ConnectionResetError, BrokenPipeError):
@@ -502,7 +506,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                 value = session.run(tf.trainable_variables())
 
                 self._send_np_array(value, worker_socket, step_value, self.num_workers, self._name,
-                                    self._private_key, CHIEF_NAME)
+                                    self._private_key, self._domain, self._ip, CHIEF_NAME)
 
                 name, broadcasted_weights = self._get_np_array(worker_socket)
                 feed_dict = {}
