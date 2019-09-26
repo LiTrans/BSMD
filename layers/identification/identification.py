@@ -5,6 +5,9 @@ from utils.iroha import send_transaction_and_print_status
 
 
 class User:
+    """
+
+    """
 
     def __init__(self, private_key, name, domain, ip, public_info):
         """
@@ -36,6 +39,8 @@ class User:
         """
         Create a personal account in a domain. In the public domain all your public information is automatically
         populated
+        :param user: (obj) A user object
+        :param private_key: (str) the private key of the user
         :return: null:
         """
         account_id = self.name + '@' + self.domain

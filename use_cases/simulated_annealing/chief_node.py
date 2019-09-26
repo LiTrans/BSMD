@@ -63,10 +63,9 @@ def acceptance_probability(old_cost, new_cost, t):
     return accept_prob
 
 
-# this model is sent to all workers
 def model(b_car, b_cost, b_tt, is_car, is_train, car_cost, car_tt, train_cost, train_tt):
     """
-    
+    This model is sent to all workers
     :param b_car:  (float) beta parameter of the car
     :param b_cost:  (float) beta parameter of the cost
     :param b_tt: (float) beta parameter of the travel time 
