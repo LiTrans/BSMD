@@ -38,7 +38,9 @@ def send_transaction_and_print_status(transaction, network):
         print(status)
 
 
+# #################################
 # functions available to all users
+# #################################
 def set_detail_to_node(sender, receiver, private_key, detail_key, detail_value, domain, ip):
     """
     Set the details of a node. In federated learning the details are in JSON format and

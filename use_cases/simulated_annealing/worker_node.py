@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import rpyc
 import csv
 import json
@@ -12,6 +13,7 @@ flags.DEFINE_string('private_key', None, 'Your private key to sign transactions'
 
 class RunNode(rpyc.Service):
 
+    @staticmethod
     def compute_cost(self, writer, domain, ip, model):
         # get_a_detail_written_by(name, writer, detail_key, private_key, domain, ip)
         b = get_a_detail_written_by(FLAGS.name, writer, FLAGS.private_key, 'betas', domain, ip)

@@ -1,26 +1,26 @@
-"""# Copyright 2018 coMind. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-# https://INTERVAL_STEPS % step_value.org/
-# =============================================================================="""
+"""
+Copyright 2018 coMind. All Rights Reserved.
 
-# """
-# We use the bellow code for data transactions of large variables in the BSMD.
-# In particular we use the socket implementation of coMind for transferring weights
-# and we add a second layer to record all transactions in the BSMD
-# """
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+https://INTERVAL_STEPS % step_value.org/
+==============================================================================
+We use the bellow code for data transactions of large variables in the BSMD.
+In particular we use the socket implementation of coMind for transferring weights
+and we add a second layer to record all transactions in the BSMD
+This code was taken from https://github.com/coMindOrg/federated-averaging-tutorials/tree/master/federated-sockets
+https://comind.org/
+"""
 import socket
 import time
 import ssl
@@ -74,8 +74,8 @@ class _FederatedHook(tf.train.SessionRunHook):
       The chief starts creating a socket that will act as server. Then it stays
       waiting _wait_time seconds and accepting connections of all those workers that
       want to join the training, and distributes a task index to each of them.
-      This task index is not always neccesary. In our demos we use it to tell
-      each worker which part of the dataset it has to use for the training and it
+      This task index is not always necessary. In our demos we use it to tell
+      each worker which part of the data-set it has to use for the training and it
       could have other applications.
 
       Remember if you training is not going to be performed in a LAN you will
@@ -87,7 +87,7 @@ class _FederatedHook(tf.train.SessionRunHook):
       so that they all start with the same initial ones.
       After each batch is trained, it checks if _interval_steps has been completed,
       and if so, it gathers the weights of all the workers and its own, averages them
-      and sends the average to all those workers that sended weights to it.
+      and sends the average to all those workers.
 
       Workers open a socket connection with the chief and wait to get their worker number.
       Once the training is going to start they wait for the chief to send them its weights.
@@ -133,14 +133,13 @@ class _FederatedHook(tf.train.SessionRunHook):
         self.task_index, self.num_workers = self._get_task_index()
 
     def _get_task_index(self):
-
-        """Chief distributes task index number to workers that connect to it and
-        lets them know how many workers are there in total.
-        Returns:
-          task_index (int): task index corresponding to this worker.
-          num_workers (int): number of total workers.
+        """
+        Chief distributes task index number to workers that connect to it and lets them know how many workers are
+        there in total.
+        :return:
+          task_index: (int) task index corresponding to this worker.
+          num_workers: (int) number of total workers.
          """
-
         if self._is_chief:
             self._server_socket = self._start_socket_server()
             self._server_socket.settimeout(5)
@@ -176,21 +175,19 @@ class _FederatedHook(tf.train.SessionRunHook):
         return int(message[0]), int(message[1])
 
     def _create_placeholders(self):
-        """Creates the placeholders that we will use to inject the weights into the graph"""
+        """
+        Creates the placeholders that we will use to inject the weights into the graph
+        """
         for var in tf.trainable_variables():
             self._placeholders.append(tf.placeholder_with_default(var, var.shape,
                                                                   name="%s/%s" % ("FedAvg",
                                                                                   var.op.name)))
 
     def _assign_vars(self, local_vars):
-        """Utility to refresh local variables.
-
-        Args:
-          local_vars: List of local variables.
-          global_vars: List of global variables.
-
-        Returns:
-          refresh_ops: The ops to assign value of global vars to local vars.
+        """
+        Utility to refresh local variables.
+        :param local_vars: List of local variables
+        :return: The ops to assign value of global vars to local vars.
         """
         reassign_ops = []
         for var, fvar in zip(local_vars, self._placeholders):
@@ -199,13 +196,13 @@ class _FederatedHook(tf.train.SessionRunHook):
 
     @staticmethod
     def _receiving_subroutine(connection_socket):
-        """Subroutine inside _get_np_array to recieve a list of numpy arrays.
-        If the sending was not correctly recieved it sends back an error message
+        """
+        Subroutine inside _get_np_array to receive a list of numpy arrays.
+        If the sending was not correctly received it sends back an error message
         to the sender in order to try it again.
-        Args:
-          connection_socket (socket): a socket with a connection already
-              established.
-         """
+        :param connection_socket: a socket with a connection already established.
+        :return:
+        """
         timeout = 0.5
         while True:
             ultimate_buffer = b''
@@ -238,18 +235,17 @@ class _FederatedHook(tf.train.SessionRunHook):
                 return message
 
     def _get_np_array(self, connection_socket):
-        """Routine to receive a list of numpy arrays.
-            Args:
-              connection_socket (socket): a socket with a connection already
-                  established.
-         """
+        """
+        Routine to receive a list of numpy arrays.
+        :param connection_socket: a socket with a connection already established.
+        """
         message = self._receiving_subroutine(connection_socket)
         received_from, final_image = pickle.loads(message)
         return received_from, final_image
 
     @staticmethod
     def _send_np_array(arrays_to_send, connection_socket, iteration, tot_workers, sender, private_key, receiver, domain,
-                       ip, list_participants=[]):
+                       ip, list_participants=None):
 
         """
         Send weights to nodes via a socket. Also write the transaction in the BSMD
@@ -265,6 +261,8 @@ class _FederatedHook(tf.train.SessionRunHook):
         :return:
         """
 
+        if list_participants is None:
+            list_participants = []
         serialized = pickle.dumps([sender, arrays_to_send])
 
         transaction_data = dict()
@@ -308,10 +306,11 @@ class _FederatedHook(tf.train.SessionRunHook):
                 break
 
     def _start_socket_server(self):
-        """Creates a socket with ssl protection that will act as server.
-            Returns:
-              sever_socket (socket): ssl secured socket that will act as server.
-         """
+        """
+        Creates a socket with ssl protection that will act as server.
+        :return:
+            sever_socket (socket): ssl secured socket that will act as server.
+        """
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
@@ -322,8 +321,9 @@ class _FederatedHook(tf.train.SessionRunHook):
         return server_socket
 
     def _start_socket_worker(self):
-        """Creates a socket with ssl protection that will act as client.
-           Returns:
+        """
+        Creates a socket with ssl protection that will act as client.
+        :return:
               sever_socket (socket): ssl secured socket that will work as client.
          """
         to_wrap_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -335,7 +335,9 @@ class _FederatedHook(tf.train.SessionRunHook):
         return client_socket
 
     def begin(self):
-        """Session begin"""
+        """
+        Session begin
+        """
         self._placeholders = []
         self._create_placeholders()
         self._update_local_vars_op = self._assign_vars(tf.trainable_variables())
@@ -351,7 +353,10 @@ class _FederatedHook(tf.train.SessionRunHook):
         Workers:
             Wait for the chief to send them its weights and inject them into
             the graph.
-         """
+        :param session:
+        :param coord:
+        :return:
+        """
         if self._is_chief:
             users = []
             addresses = []
@@ -398,9 +403,9 @@ class _FederatedHook(tf.train.SessionRunHook):
         else:
             print('Starting Initialization')
             client_socket = self._start_socket_worker()
-            CHIEF_NAME, broadcasted_weights = self._get_np_array(client_socket)
+            CHIEF_NAME, broadcast_weights = self._get_np_array(client_socket)
             feed_dict = {}
-            for placeh, brweigh in zip(self._placeholders, broadcasted_weights):
+            for placeh, brweigh in zip(self._placeholders, broadcast_weights):
                 feed_dict[placeh] = brweigh
             session.run(self._update_local_vars_op, feed_dict=feed_dict)
             print('Initialization finished')
@@ -414,7 +419,7 @@ class _FederatedHook(tf.train.SessionRunHook):
 
     def after_run(self, run_context, run_values):
         """
-        Both chief and workers, check if they should average their weights in
+         Both chief and workers, check if they should average their weights in
         this round. Is this is the case:
 
         If chief:
@@ -426,9 +431,11 @@ class _FederatedHook(tf.train.SessionRunHook):
             Send their weights to the chief.
             Wait for the chief to send them the averaged weights and inject them into
             their graph.
-         """
+        :param run_context:
+        :param run_values:
+        :return:
+        """
         step_value = run_values.results
-        # print('step value: ', step_value, self._interval_steps)
         session = run_context.session
         if step_value % self._interval_steps == 0 and not step_value == 0:
             if self._is_chief:
@@ -481,11 +488,8 @@ class _FederatedHook(tf.train.SessionRunHook):
 
                 for i, user in enumerate(users):
                     try:
-                        start = time.time()
-
                         self._send_np_array(rearranged_weights, user, step_value, self.num_workers, self._name,
                                             self._private_key, self._domain, self._ip, names[i])
-                        end = time.time()
                         user.close()
                     except (ConnectionResetError, BrokenPipeError):
                         print('Fallen Worker: ' + addresses[i][0] + ':' + str(address[i][1]))
@@ -517,6 +521,10 @@ class _FederatedHook(tf.train.SessionRunHook):
                 worker_socket.close()
 
     def end(self, session):
-        """ Session end """
+        """
+         Session end
+        :param session:
+        :return:
+        """
         if self._is_chief:
             self._server_socket.close()
