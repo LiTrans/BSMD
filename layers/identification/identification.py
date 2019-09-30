@@ -264,7 +264,7 @@ class User:
         }
 
         :param str private_key: key to sign the transaction
-        :param object user: user who write information on your identification
+        :param User user: user who write information on your identification
         :return: solicited details of the user
         :rtype: json
 
@@ -296,7 +296,7 @@ class User:
         }
 
         :param str private_key: key to sign the transaction
-        :param object user: user who write information on your identification
+        :param User user: user who write information on your identification
         :param str detail_key: name of the detail to be consulted
         :return: solicited details of the user
         :rtype: json
@@ -358,7 +358,7 @@ class User:
         >>> user = User('private_key','David',public, account_information)
         >>> user.set_detail_to(Juan, 'Age', '18', 'private_key')
 
-        :param object user: user you want to set the details
+        :param User user: user you want to set the details
         :param str detail_key: Name of the detail we want to set
         :param str detail_value: Value of the detail
         :param str private_key: key to sign the transaction
@@ -387,7 +387,7 @@ class User:
         >>> user = User('private_key','David',public, account_information)
         >>> user.grants_access_set_details_to(Juan, 'private_key')
 
-        :param object user: User you want to grant permissions to set detail on your behalf
+        :param User user: User you want to grant permissions to set detail on your behalf
         :param str private_key: Key to sign the transaction
 
         """
@@ -411,7 +411,7 @@ class User:
         >>> user = User('private_key','David',public, account_information)
         >>> user.revoke_access_set_details_to(Juan, 'private_key')
 
-        :param object user: User you want to revoke permissions to set details on your behalf
+        :param User user: User you want to revoke permissions to set details on your behalf
         :param str private_key: Key to sign the transaction
 
         """
