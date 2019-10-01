@@ -1,16 +1,8 @@
 """
 Identification
-=====================
+==============
 Defines a User class.
-You can create an User object by supplying a private key, name, domain, ip, public_info. For example:
 
->>> import json
->>> from layers.admin.administrator import Domain
->>> x = { "age": 30, "city": "New York" }
->>> account_information = json.dumps(x)
->>> me = User('private_key', 'My Name', 'My domain', '123.456.789', account_information)
->>> print(me.name)
-My name
 """
 
 from iroha import Iroha, IrohaCrypto, IrohaGrpc
@@ -20,7 +12,16 @@ from utils.iroha import send_transaction_and_print_status
 
 class User:
     """
-    Class to create a user
+    Create an User object. This object can be use to create a passive node in the BSMD
+    
+    :Example:
+    >>> import json
+    >>> from layers.admin.administrator import Domain
+    >>> x = { "age": 30, "city": "New York" }
+    >>> account_information = json.dumps(x)
+    >>> me = User('private_key', 'My Name', 'My domain', '123.456.789', account_information)
+    >>> print(me.name)
+    My name
 
     :param str private_key: private key of the user. This is not save in the class is just used to generate
                     a public_key. In other functions the private_key must be used to sign transactions. You can
@@ -28,25 +29,25 @@ class User:
 
     :param str name: name of the user (lower case)
     :param Domain domain: domain where the user will live
-    :param ip_address ip: ip of one node hosting the blockchain
+    :param str ip: ip of one node hosting the blockchain
     :param json public_info: public information of the user. If domain is public this field can't be null
-
+    
     """
 
     def __init__(self, private_key, name, domain, ip, public_info):
         self.public_key = IrohaCrypto.derive_public_key(private_key)
         self.name = name
         self.domain = domain
-        self.domain.id_name = domain.id_name
+        self.domain.name = domain.name
         ip_address = ip + ':50051'
         self.network = IrohaGrpc(ip_address)
-        if domain.id_name == 'public':
+        if domain.name == 'public':
             self.public_info = public_info
 
     # ###############
     # create my own account
     # ###############
-    def create_account(self, user, private_key):
+    def create_account(self, private_key):
         """
         Create a personal account in the BSMD. In the public domain all your public information is automatically
         populated
@@ -57,24 +58,23 @@ class User:
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> public = Domain('public', 'default_role')
-        >>> user = User('private_key','David',public, account_information)
-        >>> user.create_account(user, 'private_key')
+        >>> user = User('private_key','David', public, '123.456.789', account_information)
+        >>> user.create_account('private_key')
 
-        :param User user: An object user
         :param str private_key: The private key of the user
 
         """
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
         tx = iroha.transaction(
             [iroha.command('CreateAccount',
-                           account_name=user.name,
-                           domain_id=user.domain,
-                           public_key=user.public_key)])
+                           account_name=self.name,
+                           domain_id=self.domain,
+                           public_key=self.public_key)])
         IrohaCrypto.sign_transaction(tx, private_key)
         send_transaction_and_print_status(tx, self.network)
 
-        if user.domain == 'public':
+        if self.domain == 'public':
             self.set_detail('public', self.public_info, private_key)
 
     # ###############
@@ -89,7 +89,7 @@ class User:
         >>> from layers.admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
-        >>> domain = Domain('id_name', 'default_role'):
+        >>> domain = Domain('name', 'default_role')
         >>> user = User('private_key', 'My Name', 'My domain', '123.456.789', account_information)
         >>> user.create_domain(domain, 'private_key')
 
@@ -97,11 +97,11 @@ class User:
         :param str private_key: key to sign the transaction
 
         """
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
         tx = iroha.transaction(
             [iroha.command('CreateDomain',
-                           domain_id=domain.id_name,
+                           domain_id=domain.name,
                            default_role=domain.default_role)])
 
         IrohaCrypto.sign_transaction(tx, private_key)
@@ -131,7 +131,7 @@ class User:
         :rtype: dict
 
         """
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
         query = iroha.query('GetAccountAssets',
                             account_id=account_id)
@@ -148,8 +148,16 @@ class User:
         Transfer assets from one account to another. Both users must be in the same domain.
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> user.transfer_assets_to(Dante, 'coin', '2', 'Shut up and take my money')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_dante = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> dante = User('dante_private_key','Dante',domain, account_information_dante)
+        >>> user.transfer_assets_to(dante, 'coin', '2', 'Shut up and take my money')
 
         :param User user: User you want to transfer the assets
         :param str asset_name: Name of the asset to be transferred
@@ -159,10 +167,10 @@ class User:
 
         """
 
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
-        destination_account = user.name + '@' + self.domain.id_name
-        asset_id = asset_name + '#' + self.domain.id_name
+        destination_account = user.name + '@' + self.domain.name
+        asset_id = asset_name + '#' + self.domain.name
         tx = iroha.transaction([
             iroha.command('TransferAsset',
                           src_account_id=account_id,
@@ -182,7 +190,12 @@ class User:
         Consult all details of the user in all the domains
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
         >>> details = user.get_all_details('private_key')
         >>> print(details)
 
@@ -191,22 +204,22 @@ class User:
         :rtype: json
 
         {
-            "node@domainA":{
+            "user@domainA":{
                 "Age":"35",
                 "Name":"Quetzalcoatl"
             },
-            "node@domainB":{
+            "user@domainB":{
                 "Location":"35.3333535,-45.2141556464",
                 "Status":"valid"
             },
-            "nodeA@domainC":{
+            "user@domainC":{
                 "FederatingParam":"35.242553",
                 "Loop":"3"
             }
         }
 
         """
-        account_id = self.name + '@' + self.domain.id_name.id_name
+        account_id = self.name + '@' + self.domain.name.name
         iroha = Iroha(account_id)
         query = iroha.query('GetAccountDetail',
                             account_id=account_id)
@@ -221,11 +234,16 @@ class User:
         Consult a detail of the user
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
         >>> details = user.get_a_detail('private_key', 'age')
         >>> print(details)
         {
-            "node@domainA":{
+            "user@domainA":{
                 "Age":"35"
             }
         }
@@ -237,7 +255,7 @@ class User:
 
         """
 
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
         query = iroha.query('GetAccountDetail',
                             account_id=account_id,
@@ -253,12 +271,24 @@ class User:
         Consult all details writen by some other node
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> details = user.get_all_details_written_by(Juan, 'private_key')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_juan = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> juan = User('private_key_juan','Juan',domain, account_information_juan)
+        >>> details = user.get_all_details_written_by(juan, 'private_key')
         >>> print(details)
         {
-            "nodeA@domainC":{
+            "user@domain":{
                 "FederatingParam":"35.242553",
+                "Loop":"3"
+            },
+            "user@domain":{
+                "sa_param":"44",
                 "Loop":"3"
             }
         }
@@ -269,7 +299,7 @@ class User:
         :rtype: json
 
         """
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         user_id = user.name + '@' + user.domain
         iroha = Iroha(account_id)
         query = iroha.query('GetAccountDetail',
@@ -286,11 +316,19 @@ class User:
         Consult a detail of the node writen by other node
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> details = user.get_a_detail_written_by(Juan, 'private_key')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_juan = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> juan = User('private_key_juan','Juan',domain, account_information_juan)
+        >>> details = user.get_a_detail_written_by(juan, 'FederatingParam',  'private_key')
         >>> print(details)
         {
-            "nodeA@domainC":{
+            "user@domainC":{
                 "FederatingParam":"35.242553"
             }
         }
@@ -302,7 +340,7 @@ class User:
         :rtype: json
 
         """
-        account_id = self.name + '@' + self.domain.id_name
+        account_id = self.name + '@' + self.domain.name
         user_id = user.name + '@' + user.domain
         iroha = Iroha(account_id)
         query = iroha.query('GetAccountDetail',
@@ -324,9 +362,11 @@ class User:
 
         :Example:
         >>> import json
+        >>> from layers.admin.administrator import Domain
         >>> x = { "gender": 30, "address": "123 Tennis" }
         >>> account_information = json.dumps(x)
-        >>> user = User('private_key','David',public, account_information)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David', domain, account_information)
         >>> user.set_detail('personal information', account_information, 'private_key')
 
         :param str detail_key: Name of the detail we want to set
@@ -334,8 +374,8 @@ class User:
         :param str private_key: Key to sign the transaction
 
         """
-        # print(self.name, self.domain.id_name, self.public_key, private_key, detail_key, detail_value)
-        account_id = self.name + '@' + self.domain.id_name
+
+        account_id = self.name + '@' + self.domain.name
         iroha = Iroha(account_id)
         tx = iroha.transaction([
             iroha.command('SetAccountDetail',
@@ -355,8 +395,16 @@ class User:
         You must have the permission from the node to set information on his identification
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> user.set_detail_to(Juan, 'Age', '18', 'private_key')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_juan = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> juan = User('private_key_juan','Juan',domain, account_information_juan)
+        >>> user.set_detail_to(juan, 'Job', 'Bartender', 'private_key')
 
         :param User user: user you want to set the details
         :param str detail_key: Name of the detail we want to set
@@ -364,7 +412,7 @@ class User:
         :param str private_key: key to sign the transaction
 
         """
-        account = self.name + '@' + self.domain.id_name
+        account = self.name + '@' + self.domain.name
         iroha = Iroha(account)
         account_id = user.name + '@' + user.domain
         tx = iroha.transaction([
@@ -384,14 +432,22 @@ class User:
         Grant permission to a node to set details on your identification
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> user.grants_access_set_details_to(Juan, 'private_key')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_juan = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> juan = User('private_key_juan','Juan',domain, account_information_juan)
+        >>> user.grants_access_set_details_to(juan, 'private_key')
 
         :param User user: User you want to grant permissions to set detail on your behalf
         :param str private_key: Key to sign the transaction
 
         """
-        my_id_account = self.name + '@' + self.domain.id_name
+        my_id_account = self.name + '@' + self.domain.name
         grant_account_id = user.name + '@' + user.domain
         iroha = Iroha(my_id_account)
         tx = iroha.transaction([
@@ -408,14 +464,22 @@ class User:
         Revoke permission to a node to set details on your identification
 
         :Example:
-        >>> user = User('private_key','David',public, account_information)
-        >>> user.revoke_access_set_details_to(Juan, 'private_key')
+        >>> import json
+        >>> from layers.admin.administrator import Domain
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> x = { "age": 34, "city": "Mexico" }
+        >>> account_information_juan = json.dumps(x)
+        >>> domain = Domain('name', 'default_role')
+        >>> user = User('private_key','David',domain, account_information)
+        >>> juan = User('private_key_juan','Juan',domain, account_information_juan)
+        >>> user.revoke_access_set_details_to(juan, 'private_key')
 
         :param User user: User you want to revoke permissions to set details on your behalf
         :param str private_key: Key to sign the transaction
 
         """
-        my_id_account = self.name + '@' + self.domain.id_name
+        my_id_account = self.name + '@' + self.domain.name
         grant_account_id = user.name + '@' + user.domain
         iroha = Iroha(my_id_account)
         tx = iroha.transaction([

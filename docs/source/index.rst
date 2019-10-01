@@ -12,5 +12,8 @@ Documentation of the BSMD
    :caption: Contents:
 
    identification
+   administrator
+   incentives
+   contract
 
 

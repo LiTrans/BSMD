@@ -1,13 +1,25 @@
+"""
+Administrator
+=============
+Defines an Admin of the BSMD. This module also defines the domains
+
+"""
 from iroha import Iroha, IrohaCrypto, IrohaGrpc
 from utils.iroha import send_transaction_and_print_status
 
 
 class Admin:
+    """
+    The administrator object of the BSMD. This object can create assets, add active nodes, add passive nodes and creates
+    de public domain in the BSMD
+
+    :param str ip: ip address of one node hosting the Blockchain
+
+    :Example:
+    >>> Admin('123.456.789')
+    """
+
     def __init__(self, ip):
-        """
-        Object admin. This will handle all administrative issues in the BSMD
-        :param ip: (ip_address) ip of one node hosting the Blockchain
-        """
         self.private_key = 'f101537e319568c765b2cc89698325604991dca57b9716b58016b253506cab70'
         self.iroha = Iroha('admin@public')
         ip_address = ip + ':50051'
@@ -15,8 +27,20 @@ class Admin:
 
     def create_user_in_iroha(self, user):
         """
-        Create a personal account in a domain.
-        :return: null:
+        Creates a personal account in a domain
+
+        :Example:
+        >>> import json
+        >>> from layers.identification.identification import User
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> public = Domain('public', 'default_role')
+        >>> user = User('private_key','David',public, account_information)
+        >>> admin = Admin('123.456.789')
+        >>> admin.create_user_in_iroha(user)
+
+        :param User user: a user object
+
         """
         tx = self.iroha.transaction(
             [self.iroha.command('CreateAccount',
@@ -28,9 +52,16 @@ class Admin:
 
     def create_asset(self, asset):
         """
-        Creates an asset in the domain's asset
-         :param asset: (obj) Asset to be created
-        :return:
+        Creates an asset
+
+        :Example:
+        >>> from layers.incentive.incentives import Asset
+        >>> public = Domain('public', 'default_role')
+        >>> asset = Asset('coin', public, 3)
+        >>> admin = Admin('123.456.789')
+        >>> admin.create_asset(asset)
+
+        :param Asset asset: Asset to be created
         """
         tx = self.iroha.transaction(
             [self.iroha.command('CreateAsset',
@@ -42,17 +73,32 @@ class Admin:
 
     def add_assets_to_user(self, user, asset, asset_qty):
         """
-        Create a personal account. This function works in three steps
-            1. The admin create credit (assets) for the account (credit is created only if the user
-               buy it)
-            2. The admin transfer the credit to the user
-        :param user: (obj) user receiving the assets
-        :param asset: (obj) asset to be transferred
-        :param asset_qty: (float) Quantity of assets the node buy
-        :return: null:
+        The admin creates credit for a user. Users can buy credit in the BSMD to pay for services. This functions works
+        in two step:
+
+        #. admin add assets to his own wallet
+        #. admin transfers the asset to the user
+
+        :Example:
+        >>> import json
+        >>> from layers.identification.identification import User
+        >>> from layers.incentive.incentives import Asset
+        >>> x = { "age": 30, "city": "New York" }
+        >>> account_information = json.dumps(x)
+        >>> public = Domain('public', 'default_role')
+        >>> user = User('private_key','David',public, account_information)
+        >>> asset = Asset('coin', public, 3)
+        >>> asset.domain
+        >>> admin = Admin('123.456.789')
+        >>> admin.add_assets_to_user(user, asset, 330.2)
+
+        :param User user: User receiving the assets
+        :param Asset asset: Asset to be transferred
+        :param float asset_qty: Quantity of assets the node buy
+
         """
-        # 1. Admin create the asset for the user
-        asset_id = asset.name + '#' + asset.domain
+        # 1. Admin creates the asset for the user
+        asset_id = asset.name + '#' + asset.domain.name
         tx = self.iroha.transaction(
             [self.iroha.command('AddAssetQuantity',
                                 asset_id=asset_id,
@@ -72,34 +118,21 @@ class Admin:
         IrohaCrypto.sign_transaction(tx, self.private_key)
         send_transaction_and_print_status(tx, self.network)
 
-    def create_domain_and_asset(self, domain, asset):
-        """
-        Creates a domain and an asset in the domain
-        :param domain: (obj) domain to be created
-        :param asset: (obj) asset to be create in the domain
-        :return: null
-        """
-        print(domain.id, domain.default_role, asset.name, asset.precision)
-        commands = [self.iroha.command('CreateDomain',
-                                       domain_id=domain.id,
-                                       default_role=domain.default_role),
-                    self.iroha.command('CreateAsset',
-                                       asset_name=asset.name,
-                                       domain_id=asset.domain,
-                                       precision=asset.precision)]
-
-        tx = IrohaCrypto.sign_transaction(self.iroha.transaction(commands),
-                                          self.private_key)
-        send_transaction_and_print_status(tx, self.network)
-
     def create_domain(self, domain):
         """
         Creates a domain
-        :param domain: (obj) domain to be created
+
+        :Example:
+        >>> public = Domain('public', 'default_role')
+        >>> admin = Admin('123.456.789')
+        >>> admin.create_domain(public)
+
+        :param Domain domain: domain to be created
+
         """
         tx = self.iroha.transaction(
             [self.iroha.command('CreateDomain',
-                                domain_id=domain.id_name,
+                                domain_id=domain.name,
                                 default_role=domain.default_role)])
 
         IrohaCrypto.sign_transaction(tx, self.private_key)
@@ -107,11 +140,18 @@ class Admin:
 
 
 class Domain:
-    def __init__(self, id_name, default_role):
-        """
-        Object domain
-        :param id_name: (str) name of the domain
-        :param default_role:  (str) default role in the domain
-        """
-        self.id_name = id_name
+    """
+    The domain can be use to run distributed processes. Or to constantly share information of an specific
+    type
+
+    :Example:
+    >>> Domain('public', 'default_role')
+
+    :param str name: name of the domain
+    :param str default_role: default role in the domain
+
+    """
+    def __init__(self, name, default_role):
+
+        self.name = name
         self.default_role = default_role
