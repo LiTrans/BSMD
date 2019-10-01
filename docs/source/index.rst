@@ -15,5 +15,6 @@ Documentation of the BSMD
    administrator
    incentives
    contract
+   utils
 
 

@@ -1,4 +1,9 @@
-#!/usr/bin/env python3
+"""
+Iroha
+=====
+Functions to post transactions in the iroha implementation of the BSMD
+
+"""
 from iroha import IrohaCrypto, Iroha, IrohaGrpc
 import binascii
 import sys
@@ -26,7 +31,7 @@ def send_transaction_and_print_status(transaction, network):
     Send a transaction to the Blockchain (BSMD)
     :param transaction: Transaction we are sending to the BSMD
     :param network: address of the a node hosting the Blockchain
-    :return: null:
+
     """
     print('This print will make the transactions run slower. When developing is useful to have this for debugging')
     print('Comment all prints in function send_transaction_and_print_status to make faster transactions')
@@ -43,16 +48,24 @@ def send_transaction_and_print_status(transaction, network):
 # #################################
 def set_detail_to_node(sender, receiver, private_key, detail_key, detail_value, domain, ip):
     """
-    Set the details of a node. In federated learning the details are in JSON format and
-    contains the address (location) where the weight is stored (if the weight is small enough it can be
-    embedded to the block if needed)
-    :param sender: (str) name of the node sending the information
-    :param receiver: (str) name of the node receiving the information
-    :param private_key: (str) Private key of the user
-    :param detail_key: (str) Name of the detail we want to set
-    :param detail_value: (str) Value of the detail
-    :param domain: (str) Name of the domain
-    :param ip: (ip) address for connecting to the BSMD
+    This function can be use when the User object is no available. The sender must have permission to write in the
+    details of the receiver.
+
+    In federated learning the details are in JSON format and contains the address (location) where the weight is stored
+    if the weight is small enough it can be embedded to the block if needed)
+
+    :Example:
+    >>> set_detail_to_node('David', 'Juan', 'private key of david', 'detail key of Juan', 'detail value', 'domain' \
+    'ip')
+
+    :param str sender: Name of the node sending the information
+    :param str receiver: Name of the node receiving the information
+    :param str private_key: Private key of the user
+    :param str detail_key: Name of the detail we want to set
+    :param str detail_value: Value of the detail
+    :param str domain: Name of the domain
+    :param str ip: address for connecting to the BSMD
+
     """
     account = sender + '@' + domain
     iroha = Iroha(account)
@@ -71,19 +84,26 @@ def set_detail_to_node(sender, receiver, private_key, detail_key, detail_value, 
 
 def get_a_detail_written_by(name, writer, private_key, detail_key, domain, ip):
     """
-    Consult a details of the node writen by other node
-    :param name: (str) name of the node consulting the information
-    :param writer: (str) name of the node who write the detail
-    :param private_key: (str) Private key of the user
-    :param detail_key: (str)  Name of the detail we want to consult
-    :param domain: (str) Name of the domain
-    :param ip: (ip) address for connecting to the BSMD
-    :return:
-        {
-           "nodeA@domain":{
-                 "Age":"35"
-        }
-}
+    This function can be use when the User object is no available. Consult a details of the node writen by other node
+
+    :Example:
+    >>> juan_detail = get_a_detail_written_by('David', 'Juan', 'private key of david', 'detail_key of Juan', 'domain', \
+    'ip')
+    >>> print(juan_detail)
+    {
+        "nodeA@domain":{
+        "Age":"35"
+    }
+
+    :param str name: Name of the node consulting the information
+    :param str writer: Name of the node who write the detail
+    :param str private_key: Private key of the user
+    :param str detail_key: Name of the detail we want to consult
+    :param str domain: Name of the domain
+    :param str ip: Address for connecting to the BSMD
+    :return: returns the detail writen by "the writer"
+    :rtype: json
+
     """
 
     account_id = name + '@' + domain
