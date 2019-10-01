@@ -9,6 +9,7 @@ from rpyc.utils.server import ThreadedServer
 FLAGS = flags.FLAGS
 flags.DEFINE_string('name', None, 'Your name')
 flags.DEFINE_string('private_key', None, 'Your private key to sign transactions')
+flags.DEFINE_string('port', None, 'The port for listening the transactions')
 
 
 class RunNode(rpyc.Service):
@@ -46,7 +47,7 @@ class RunNode(rpyc.Service):
         set_detail_to_node(FLAGS.name, writer, FLAGS.private_key, 'cost', cost, domain, ip)
 
 
-t = ThreadedServer(RunNode, port=18861)
+t = ThreadedServer(RunNode, FLAGS.port)
 t.start()
 
 
