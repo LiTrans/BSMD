@@ -87,7 +87,7 @@ class Admin:
         >>> import json
         >>> from layers.identification.user import User
         >>> from layers.incentive.asset import Asset
-        >>> x = { "age": 30, "city": "New York" }
+        >>> x = { "age": 30, "city": "Cartagena" }
         >>> account_information = json.dumps(x)
         >>> public = Domain('public', 'default_role')
         >>> user = User('private_key','David',public, account_information)
