@@ -16,5 +16,7 @@ Documentation of the BSMD
    incentives
    contract
    utils
+   communication
+
 
 
