@@ -1,4 +1,8 @@
 """
+=============
+Communication
+=============
+
 Peer-to-peer communications
 ===========================
 This module is for p2p communication between two nodes. The communication is done via sockets, for now the messages
@@ -19,6 +23,7 @@ To stat a p2p communication do the following:
 
 
 This code was taken from https://www.webcodegeeks.com/python/python-network-programming-tutorial/
+
 """
 
 import socket

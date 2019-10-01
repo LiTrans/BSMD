@@ -1,4 +1,8 @@
 """
+=====
+Admin
+=====
+
 Administrator
 =============
 Defines an Admin of the BSMD. This module also defines the domains
@@ -31,7 +35,7 @@ class Admin:
 
         :Example:
         >>> import json
-        >>> from layers.identification.identification import User
+        >>> from layers.identification.user import User
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> public = Domain('public', 'default_role')
@@ -55,7 +59,7 @@ class Admin:
         Creates an asset
 
         :Example:
-        >>> from layers.incentive.incentives import Asset
+        >>> from layers.incentive.asset import Asset
         >>> public = Domain('public', 'default_role')
         >>> asset = Asset('coin', public, 3)
         >>> admin = Admin('123.456.789')
@@ -81,8 +85,8 @@ class Admin:
 
         :Example:
         >>> import json
-        >>> from layers.identification.identification import User
-        >>> from layers.incentive.incentives import Asset
+        >>> from layers.identification.user import User
+        >>> from layers.incentive.asset import Asset
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> public = Domain('public', 'default_role')

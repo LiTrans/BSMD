@@ -1,2 +1,2 @@
-.. automodule:: layers.incentive.incentives
+.. automodule:: layers.incentive.asset
     :members:

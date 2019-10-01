@@ -1,2 +1,2 @@
-.. automodule:: layers.admin.administrator
+.. automodule:: admin.administrator
     :members:

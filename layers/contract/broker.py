@@ -1,4 +1,8 @@
 """
+========
+Contract
+========
+
 Broker
 ======
 Defines a Broker class
@@ -6,7 +10,6 @@ Defines a Broker class
 """
 from iroha import Iroha, IrohaCrypto, IrohaGrpc
 from utils.iroha import send_transaction_and_print_status
-
 
 class Broker:
     """
@@ -38,7 +41,7 @@ class Broker:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "address": "123 Street, City", "type": "broker" }
         >>> public_info = json.dumps(x)
         >>> broker = Broker('private_key','broker', '123.456.789', public_info)
@@ -72,7 +75,7 @@ class Broker:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> from layers.identification.identification import User
         >>> x = { "gender": 30, "address": "123 Tennis" }
         >>> user_info = json.dumps(x)

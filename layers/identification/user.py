@@ -1,6 +1,10 @@
 """
+==============
 Identification
 ==============
+
+User
+====
 Defines a User class.
 
 """
@@ -16,7 +20,7 @@ class User:
     
     :Example:
     >>> import json
-    >>> from layers.admin.administrator import Domain
+    >>> from admin.administrator import Domain
     >>> x = { "age": 30, "city": "New York" }
     >>> account_information = json.dumps(x)
     >>> me = User('private_key', 'My Name', 'My domain', '123.456.789', account_information)
@@ -54,7 +58,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> public = Domain('public', 'default_role')
@@ -86,7 +90,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> domain = Domain('name', 'default_role')
@@ -149,7 +153,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }
@@ -191,7 +195,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> domain = Domain('name', 'default_role')
@@ -235,7 +239,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> domain = Domain('name', 'default_role')
@@ -272,7 +276,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }
@@ -317,7 +321,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }
@@ -362,7 +366,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "gender": 30, "address": "123 Tennis" }
         >>> account_information = json.dumps(x)
         >>> domain = Domain('name', 'default_role')
@@ -396,7 +400,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }
@@ -433,7 +437,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }
@@ -465,7 +469,7 @@ class User:
 
         :Example:
         >>> import json
-        >>> from layers.admin.administrator import Domain
+        >>> from admin.administrator import Domain
         >>> x = { "age": 30, "city": "New York" }
         >>> account_information = json.dumps(x)
         >>> x = { "age": 34, "city": "Mexico" }

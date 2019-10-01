@@ -1,6 +1,10 @@
 """
-Incentives
-==========
+=========
+Incentive
+=========
+
+Asset
+=====
 Defines an Asset class.
 
 """
@@ -11,7 +15,7 @@ class Asset:
     Assets are created in domains and are use as cryptocurrencies
 
     :Example:
-    >>> from layers.admin.administrator import Domain
+    >>> from admin.administrator import Domain
     >>> public = Domain('public', 'default_role')
     >>> Asset('coin', public, 3)
 

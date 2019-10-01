@@ -1,4 +1,14 @@
 """
+
+Hook for federated learning
+===========================
+
+We use the bellow code for data transactions of large variables in the BSMD.
+In particular we use the socket implementation of coMind for transferring weights
+and we add a second layer to record all transactions in the BSMD
+This code was taken from https://github.com/coMindOrg/federated-averaging-tutorials/tree/master/federated-sockets
+https://comind.org/
+
 Copyright 2018 coMind. All Rights Reserved.
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,12 +24,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 https://INTERVAL_STEPS % step_value.org/
-==============================================================================
-We use the bellow code for data transactions of large variables in the BSMD.
-In particular we use the socket implementation of coMind for transferring weights
-and we add a second layer to record all transactions in the BSMD
-This code was taken from https://github.com/coMindOrg/federated-averaging-tutorials/tree/master/federated-sockets
-https://comind.org/
 """
 import socket
 import time
@@ -59,7 +63,8 @@ def convert_weights_to_json(weights):
 
 
 class _FederatedHook(tf.train.SessionRunHook):
-    """Provides a hook to implement federated averaging with tensorflow.
+    """
+    Provides a hook to implement federated averaging with tensorflow.
 
       In a typical synchronous training environment, gradients will be averaged each
       step and then applied to the variables in one shot, after which replicas can
