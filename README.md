@@ -13,7 +13,7 @@ universities or companies who have the resources for these tasks.
 ## Layers
 
 The BSMD frameworks is described in [Layers](layers). The [Identification layer](layers/identification) is 
-composed of mobility and other information that the nodes own. In the [Contract layer](layers/contract) are the brokers
+composed by mobility and other information that the nodes own. In the [Contract layer](layers/contract) are the brokers
 who facilitate data transactions between nodes. The [Communication](layers/communication) layer contains functions to 
 establish *peer-to-peer* connections. Finally, in the [Incentive](layers/incentive) layer are the rewards 
 the *active* nodes receive for participating in consensus and the reward nodes receive for sharing (selling) 
@@ -35,7 +35,8 @@ Our documentation is hosted at ReadTheDocs service here: [https://bsmd.readthedo
 ## Prerequisites
 
 To start using the BSMD you must have at least one *Iroha* node running. Read the [Iroha docs](https://iroha.readthedocs.io) 
-for building and installing an Iroha network
+for building and installing an Iroha network. A set of shell commands for running single of multiple instances of Iroha
+nodes can be find at the [Utils folder](utils).
 
 ## Built With
 
