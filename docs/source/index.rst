@@ -39,7 +39,6 @@ Iroha network
    :caption: Utils:
 
    utils
-   administrator
 
 
 

@@ -1,7 +1,5 @@
 """
-=====
-Admin
-=====
+.. _Administrator:
 
 Administrator
 =============

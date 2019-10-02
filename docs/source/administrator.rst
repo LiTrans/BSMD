@@ -1,2 +1,0 @@
-.. automodule:: admin.administrator
-    :members:

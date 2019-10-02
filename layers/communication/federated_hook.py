@@ -1,7 +1,8 @@
 """
+.. _FedHook:
 
-Hook for federated learning
-===========================
+federated_hook
+==============
 
 We use the bellow code for data transactions of large variables in the BSMD.
 In particular we use the socket implementation of coMind for transferring weights
@@ -84,8 +85,8 @@ class _FederatedHook(tf.train.SessionRunHook):
     could have other applications.
 
     Remember if you training is not going to be performed in a LAN you will
-    need to do some port forwarding, we recommend you to have a look to this
-    article_ we wrote about it.
+    need to do some port forwarding, the authors recommend you to have a look to this
+    article_ they wrote about it.
 
     Once the training is going to start sends it's weights to the other workers,
     so that they all start with the same initial ones.
@@ -100,7 +101,7 @@ class _FederatedHook(tf.train.SessionRunHook):
     the averaged weights with which they will continue training.
 
     :param bool is_chief: whether it is going to act as chief or not.
-    :param str worker_name: name of the node in the BSMD
+    :param str name: name of the node in the BSMD
     :param str private_ip: complete local ip in which the chief is going to serve its socket.
                             Example: 172.134.65.123:7777
     :param str public_ip: ip to which the workers are going to connect.

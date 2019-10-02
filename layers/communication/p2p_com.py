@@ -1,7 +1,8 @@
 """
+.. _p2p:
 
-Peer-to-peer communications
-===========================
+p2p_com
+=======
 This module is for p2p communication between two nodes. The communication is done via sockets, for now the messages
 are not encrypted. For external networks you may need to open ports.
 
