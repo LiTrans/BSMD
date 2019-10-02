@@ -17,8 +17,8 @@ participants as long as both parties agree to the transaction rules issued by th
 Data ownership, transparency, auditability and access control are the core principles of the proposed blockchain
 for smart mobility data-market. For a description of the framework read the paper_.
 
-Prerequisite
-------------
+Prerequisites
+-------------
 To start using the BSMD you must have at least one *Iroha* node running. *Hyperledger Iroha* is a straightforward
 distributed ledger technology (DLT), inspired by Japanese Kaizen principle — eliminate excessiveness (muri).
 Iroha has essential functionality for your asset, information and identity management needs, at the same time being an
@@ -26,7 +26,7 @@ efficient and trustworthy crash fault-tolerant tool for your enterprise needs [#
 Iroha network
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Layers:
 
    contract

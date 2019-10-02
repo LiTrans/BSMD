@@ -6,8 +6,7 @@ Hook for federated learning
 We use the bellow code for data transactions of large variables in the BSMD.
 In particular we use the socket implementation of coMind for transferring weights
 and we add a second layer to record all transactions in the BSMD
-This code was taken from https://github.com/coMindOrg/federated-averaging-tutorials/tree/master/federated-sockets
-https://comind.org/
+This code was taken from comind.org_.
 
 Copyright 2018 coMind. All Rights Reserved.
 
@@ -23,7 +22,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-https://INTERVAL_STEPS % step_value.org/
+.. _comind.org: https://github.com/coMindOrg/federated-averaging-tutorials/tree/master/federated-sockets
+
 """
 import socket
 import time
@@ -66,60 +66,58 @@ class _FederatedHook(tf.train.SessionRunHook):
     """
     Provides a hook to implement federated averaging with tensorflow.
 
-      In a typical synchronous training environment, gradients will be averaged each
-      step and then applied to the variables in one shot, after which replicas can
-      fetch the new variables and continue. In a federated average training environment,
-      model variables will be averaged every 'interval_steps' steps, and then the
-      replicas will fetch the new variables and continue training locally. In the
-      interval between two average operations, there is no data transfer, which can
-      accelerate training.
+    In a typical synchronous training environment, gradients will be averaged each
+    step and then applied to the variables in one shot, after which replicas can
+    fetch the new variables and continue. In a federated average training environment,
+    model variables will be averaged every 'interval_steps' steps, and then the
+    replicas will fetch the new variables and continue training locally. In the
+    interval between two average operations, there is no data transfer, which can
+    accelerate training.
 
-      The hook has two different ways of working depending if it is the chief worker or not.
+    The hook has two different ways of working depending if it is the chief worker or not.
 
-      The chief starts creating a socket that will act as server. Then it stays
-      waiting _wait_time seconds and accepting connections of all those workers that
-      want to join the training, and distributes a task index to each of them.
-      This task index is not always necessary. In our demos we use it to tell
-      each worker which part of the data-set it has to use for the training and it
-      could have other applications.
+    The chief starts creating a socket that will act as server. Then it stays
+    waiting _wait_time seconds and accepting connections of all those workers that
+    want to join the training, and distributes a task index to each of them.
+    This task index is not always necessary. In our demos we use it to tell
+    each worker which part of the data-set it has to use for the training and it
+    could have other applications.
 
-      Remember if you training is not going to be performed in a LAN you will
-      need to do some port forwarding, we recommend you to have a look to this
-      article we wrote about it:
-      https://medium.com/comind/raspberry-pis-federated-learning-751b10fc92c9
+    Remember if you training is not going to be performed in a LAN you will
+    need to do some port forwarding, we recommend you to have a look to this
+    article_ we wrote about it.
 
-      Once the training is going to start sends it's weights to the other workers,
-      so that they all start with the same initial ones.
-      After each batch is trained, it checks if _interval_steps has been completed,
-      and if so, it gathers the weights of all the workers and its own, averages them
-      and sends the average to all those workers.
+    Once the training is going to start sends it's weights to the other workers,
+    so that they all start with the same initial ones.
+    After each batch is trained, it checks if _interval_steps has been completed,
+    and if so, it gathers the weights of all the workers and its own, averages them
+    and sends the average to all those workers.
 
-      Workers open a socket connection with the chief and wait to get their worker number.
-      Once the training is going to start they wait for the chief to send them its weights.
-      After each training round they check if _interval_steps has been completed,
-      and if so, they send their weights to the chief and wait for it's response,
-      the averaged weights with which they will continue training.
+    Workers open a socket connection with the chief and wait to get their worker number.
+    Once the training is going to start they wait for the chief to send them its weights.
+    After each training round they check if _interval_steps has been completed,
+    and if so, they send their weights to the chief and wait for it's response,
+    the averaged weights with which they will continue training.
+
+    :param bool is_chief: whether it is going to act as chief or not.
+    :param str worker_name: name of the node in the BSMD
+    :param str private_ip: complete local ip in which the chief is going to serve its socket.
+                            Example: 172.134.65.123:7777
+    :param str public_ip: ip to which the workers are going to connect.
+    :param str private_key: private key of the node for signing the transactions
+    :param list list_of_workers: list of all the nodes that are willing to participate. In theory the chief node
+                                    knows the list as he creates the domain and accounts for the participants
+    :param str domain: name of the domain
+    :param str ip: ip address for connecting to the BSMD
+    :param int,optional wait_time: how long the chief should wait at the beginning for the workers to connect.
+    :param int,optional interval_steps: number of steps between two "average op", which specifies how frequent a model
+                                        synchronization is performed
+
+    .. _article: https://medium.com/comind/raspberry-pis-federated-learning-751b10fc92c9
       """
 
     def __init__(self, is_chief, name, private_ip, public_ip, private_key, list_of_workers, domain, ip,
                  wait_time=30, interval_steps=100):
-        """
-        Constructs a FederatedHook object
-        :param is_chief (bool): whether it is going to act as chief or not.
-        :param worker_name (str): name of the node in the BSMD
-        :param private_ip (str): complete local ip in which the chief is going to serve its socket.
-                                Example: 172.134.65.123:7777
-        :param public_ip (str): ip to which the workers are going to connect.
-        :param private_key (str): private key of the node for signing the transactions
-        :param list_of_workers (list): list of all the nodes that are willing to participate. In theory the chief node
-                                        knows the list as he creates the domain and accounts for the participants
-        :param domain (str): name of the domain
-        :param ip (str): ip address for connecting to the BSMD
-        :param wait_time (int, optional): how long the chief should wait at the beginning for the workers to connect.
-        :param interval_steps (int, optional): number of steps between two "average op", which specifies
-                                            how frequent a model synchronization is performed
-        """
-
         self._is_chief = is_chief
         self._name = name
         self._private_ip = private_ip.split(':')[0]
@@ -141,9 +139,8 @@ class _FederatedHook(tf.train.SessionRunHook):
         """
         Chief distributes task index number to workers that connect to it and lets them know how many workers are
         there in total.
-        :return:
-          task_index: (int) task index corresponding to this worker.
-          num_workers: (int) number of total workers.
+
+        :return: task index corresponding to this worker and the total workers.
          """
         if self._is_chief:
             self._server_socket = self._start_socket_server()
@@ -191,8 +188,10 @@ class _FederatedHook(tf.train.SessionRunHook):
     def _assign_vars(self, local_vars):
         """
         Utility to refresh local variables.
+
         :param local_vars: List of local variables
         :return: The ops to assign value of global vars to local vars.
+
         """
         reassign_ops = []
         for var, fvar in zip(local_vars, self._placeholders):
@@ -205,8 +204,10 @@ class _FederatedHook(tf.train.SessionRunHook):
         Subroutine inside _get_np_array to receive a list of numpy arrays.
         If the sending was not correctly received it sends back an error message
         to the sender in order to try it again.
+
         :param connection_socket: a socket with a connection already established.
         :return:
+
         """
         timeout = 0.5
         while True:
@@ -242,7 +243,9 @@ class _FederatedHook(tf.train.SessionRunHook):
     def _get_np_array(self, connection_socket):
         """
         Routine to receive a list of numpy arrays.
+
         :param connection_socket: a socket with a connection already established.
+
         """
         message = self._receiving_subroutine(connection_socket)
         received_from, final_image = pickle.loads(message)
@@ -254,16 +257,17 @@ class _FederatedHook(tf.train.SessionRunHook):
 
         """
         Send weights to nodes via a socket. Also write the transaction in the BSMD
+
         :param arrays_to_send: weight to be send
         :param connection_socket:
-        :param iteration: iteration number in the federated process
-        :param tot_workers: total number of node in the federated process
-        :param sender: name of the node sending the information
-        :param private_key: private key of the node sending the transaction
-        :param receiver: name of the receiver
-        :param list_participants (array, optional): list of participants in the federated process. This variable is
+        :param int iteration: iteration number in the federated process
+        :param int tot_workers: total number of node in the federated process
+        :param str sender: name of the node sending the information
+        :param str private_key: private key of the node sending the transaction
+        :param str receiver: name of the receiver
+        :param array, optional list_participants: list of participants in the federated process. This variable is
                                                     just need in the first loop
-        :return:
+
         """
 
         if list_participants is None:
@@ -313,8 +317,8 @@ class _FederatedHook(tf.train.SessionRunHook):
     def _start_socket_server(self):
         """
         Creates a socket with ssl protection that will act as server.
-        :return:
-            sever_socket (socket): ssl secured socket that will act as server.
+
+        :return: ssl secured socket that will act as server.
         """
         server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -328,8 +332,8 @@ class _FederatedHook(tf.train.SessionRunHook):
     def _start_socket_worker(self):
         """
         Creates a socket with ssl protection that will act as client.
-        :return:
-              sever_socket (socket): ssl secured socket that will work as client.
+
+        :return: ssl secured socket that will work as client.
          """
         to_wrap_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
@@ -358,9 +362,10 @@ class _FederatedHook(tf.train.SessionRunHook):
         Workers:
             Wait for the chief to send them its weights and inject them into
             the graph.
+
         :param session:
         :param coord:
-        :return:
+
         """
         if self._is_chief:
             users = []
@@ -419,7 +424,10 @@ class _FederatedHook(tf.train.SessionRunHook):
             client_socket.close()
 
     def before_run(self, run_context):
-        """ Session before_run"""
+        """
+        Session before_run
+
+        """
         return tf.train.SessionRunArgs(self._global_step)
 
     def after_run(self, run_context, run_values):
@@ -436,9 +444,6 @@ class _FederatedHook(tf.train.SessionRunHook):
             Send their weights to the chief.
             Wait for the chief to send them the averaged weights and inject them into
             their graph.
-        :param run_context:
-        :param run_values:
-        :return:
         """
         step_value = run_values.results
         session = run_context.session
@@ -528,8 +533,6 @@ class _FederatedHook(tf.train.SessionRunHook):
     def end(self, session):
         """
          Session end
-        :param session:
-        :return:
         """
         if self._is_chief:
             self._server_socket.close()
