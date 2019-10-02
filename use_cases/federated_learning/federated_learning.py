@@ -23,6 +23,7 @@ flags.DEFINE_boolean("is_chief", False, "True if this worker is chief")
 flags.DEFINE_string("name", None, "name of the node in the BSMD")
 flags.DEFINE_string("domain", None, "name of the domain")
 flags.DEFINE_string("ip", None, "ip address for connecting to the BSMD")
+flags.DEFINE_string("private_key", None, "private ket of the node")
 flags.DEFINE_string("file_X", None, "X information file of the node")
 flags.DEFINE_string("file_Y", None, "Y information file of the node")
 
@@ -33,10 +34,10 @@ os.environ['CUDA_VISIBLE_DEVICES'] = ''
 # Create the custom hook
 FLAGS = flags.FLAGS
 
-list_of_workers = ['alan', 'juan', 'pedro']
+list_of_workers = ['worker1', 'worker2', 'worker3', 'worker4', 'worker5', 'worker6', 'worker7', 'worker8', 'worker9']
 
-federated_hook = _FederatedHook(FLAGS.is_chief, FLAGS.name, CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, list_of_workers,
-                                FLAGS.domain, FLAGS.ip, WAIT_TIME, INTERVAL_STEPS)
+federated_hook = _FederatedHook(FLAGS.is_chief, FLAGS.name, CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, FLAGS.private_key,
+                                list_of_workers, FLAGS.domain, FLAGS.ip, WAIT_TIME, INTERVAL_STEPS)
 
 # parameters definition
 num_channels_ensemble = [5]
