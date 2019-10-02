@@ -34,8 +34,8 @@ Our documentation is hosted at ReadTheDocs service here: [https://bsmd.readthedo
 
 ## Prerequisites
 
-To start using the BSMD you must have at least one *Iroha* node running. Read the  
-[Iroha docs](https://iroha.readthedocs.io) for building and installing an Iroha network
+To start using the BSMD you must have at least one *Iroha* node running. Read the [Iroha docs](https://iroha.readthedocs.io) 
+for building and installing an Iroha network
 
 ## Built With
 
