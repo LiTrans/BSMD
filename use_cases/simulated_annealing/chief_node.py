@@ -13,9 +13,9 @@ flags.DEFINE_string('private_key', None, 'Your private key to sign transactions'
 # Connect to the working nodes
 workers_proxies = []
 # List all ports for connecting
-ports = [18861]
+ports = [9990, 9991, 9993, 9994]
 # type the names of all workers
-workers = ['pedro', 'juan', 'jose']
+workers = ['worker1', 'worker2', 'worker3', 'worker4']
 
 # Get the proxies of all workers
 for port in ports:

@@ -27,16 +27,18 @@ In the [federated_learnig.py](federated_learning.py) file modify the lines
 CHIEF_PUBLIC_IP = 'localhost:7777' # Public IP of the chief worker
 CHIEF_PRIVATE_IP = 'localhost:7777' # Private IP of the chief worker
 ```
-In the [iroha_config](iroha_config.py) file modify the lines 
+In the [iroha_config](../iroha_config.py) file modify the lines 
 ```python
 # Set the ip of one iroha node
 ip_iroha_node = '123.456.789'
 ```
 
-To setup the federated nodes run. This script will create; (1) an admin of the BSDM, a domain and 10 *passive nodes* (9 worker and 1 chief) 
+To setup the federated nodes run
 ```bash
 python3 setup.py
 ```
+The script will create; (1) an admin of the BSDM, a domain and 10 *passive nodes* (9 worker and 1 chief) 
+
 
 flags.DEFINE_boolean("is_chief", False, "True if this worker is chief")
 flags.DEFINE_string("name", None, "name of the node in the BSMD")

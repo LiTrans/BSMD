@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import sys
-import use_cases.federated_learning.iroha_config as iroha_config
+import use_cases.iroha_config as iroha_config
 import json
 from utils.administrator import Domain, Admin
 from layers.identification.user import User
