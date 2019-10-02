@@ -27,7 +27,7 @@ class RunNode(rpyc.Service):
         b_tt = float(beta[2])
 
         observations = []
-        with open('data_one.csv') as file:
+        with open('data/' + FLAGS.name + '.csv') as file:
             reader = csv.reader(file)
             next(reader)
             for row in reader:
