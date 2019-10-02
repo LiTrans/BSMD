@@ -1,7 +1,7 @@
 """
 .. _FedHook:
 
-federated_hook
+Federated_hook
 ==============
 
 We use the bellow code for data transactions of large variables in the BSMD.
@@ -106,7 +106,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                             Example: 172.134.65.123:7777
     :param str public_ip: ip to which the workers are going to connect.
     :param str private_key: private key of the node for signing the transactions
-    :param list list_of_workers: list of all the nodes that are willing to participate. In theory the chief node
+    :param list[str] list_of_workers: list of all the nodes that are willing to participate. In theory the chief node
                                     knows the list as he creates the domain and accounts for the participants
     :param str domain: name of the domain
     :param str ip: ip address for connecting to the BSMD
