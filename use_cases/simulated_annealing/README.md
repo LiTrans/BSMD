@@ -1,9 +1,11 @@
 The experiment follows the next steps:
-1. The master node use the BSMD (Iroha) to send the beta parameters to the slave nodes. 
-2. The slave node get the beta parameters from the BSMD and run the model using his personal observations (e.g. the personal observations of slave 1 are in the [data_one.csv](data_one.csv) file)
-3. The slave nodes use the BSMD to send the results of the model
-4. Master node collect all results from the BSMD and start the annealing process. In this process master and slaves will share beta parameters and model results
-5. Once the annealing process finish the master node will have the result of the _loglikehood_ method 
+1. The chief node use the BSMD (Iroha) to send the beta parameters to the worker nodes. 
+2. The worker node get the beta parameters from the BSMD and run the model using his personal observations 
+(e.g. the personal observations of worker 1 are in the [worker1.csv](data/worker1.csv) file)
+3. The worker nodes use the BSMD to send the results of the model
+4. Master node collect all results from the BSMD and start the annealing process. In this process chief and 
+workers will share beta parameters and model results
+5. Once the annealing process finish the chief node will have the result of the _loglikehood_ method 
 
 ## Setup
 
