@@ -5,7 +5,8 @@ The experiment follows the next steps.
 3. The chief node averages the results and send the average to all workers
 4. Step 2 and 3 are repeated until EPOCH = 100
 
-All transactions are recorded in the BSMD and we use sockets for p2p data transfers.
+All transactions are recorded in the BSMD and we use sockets for p2p data transfers. You must have at lear one Iroha 
+node running
 
 # Setup
 
