@@ -16,7 +16,7 @@ python3 setup.py
 The script will create; (1) an admin of the BSDM, a domain and 10 *passive nodes* (9 worker and 1 chief) 
 
 ### Run the expermient
-This exmperiment is ment to work on a local machine, but with a fewer modification you can make it work on different
+This experiment is meant to work on a local machine, but with a fewer modification you can make it work on different
 machines
 
 #### Start the worker nodes:
