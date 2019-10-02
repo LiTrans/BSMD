@@ -9,32 +9,8 @@
                        {
                           "addPeer":{
                              "peer":{
-                                "address":"18.221.153.167:10001",
+                                "address":"127.0.0.1:10001",
                                 "peerKey":"bddd58404d1315e0eb27902c5d7c8eb0602c16238f005773df406bc191308929"
-                             }
-                          }
-                       },
-                       {
-                          "addPeer":{
-                             "peer":{
-                                "address":"18.217.85.131:10001",
-                                "peerKey":"e5e9011344b332b8ca17d7490014410c2c6ad5921bed4add7a055ab09c5373be"
-                             }
-                          }
-                       },
-		       {
-                          "addPeer":{
-                             "peer":{
-                                "address":"18.220.57.181:10001",
-                                "peerKey":"8099888e976e5da3bba75524e633e551e514b9e4d9d959af9fb468313625cef6"
-                             }
-                          }
-                       },
-		       {
-                          "addPeer":{
-                             "peer":{
-                                "address":"18.191.46.178:10001",
-                                "peerKey":"a1dd3d0620382ae7ff693024f5f542d22188f60d15e09c8ab37ed13b9ac6fd66"
                              }
                           }
                        },
@@ -81,30 +57,7 @@
                                 "can_receive",
                                 "can_remove_signatory",
                                 "can_set_quorum",
-                                "can_transfer",
-				"can_create_domain",
-				"can_get_blocks",
-				"can_create_account",
-				"can_get_domain_acc_detail"					
-                             ]
-                          }
-                       },
-                       {
-                          "createRole":{
-                             "roleName":"user_domain",
-                             "permissions":[
-                                "can_add_signatory",
-                                "can_get_my_acc_detail",
-                                "can_get_my_acc_txs",
-                                "can_get_my_account",
-                                "can_get_my_signatories",
-                                "can_get_my_txs",
-                                "can_grant_can_add_my_signatory",
-                                "can_grant_can_remove_my_signatory",
-                                "can_grant_can_set_my_account_detail",
-                                "can_grant_can_set_my_quorum",
-                                "can_remove_signatory",
-                                "can_set_quorum",					
+                                "can_transfer"
                              ]
                           }
                        },
@@ -121,26 +74,47 @@
                        },
                        {
                           "createDomain":{
-                             "domainId":"public",
+                             "domainId":"test",
                              "defaultRole":"user"
+                          }
+                       },
+                       {
+                          "createAsset":{
+                             "assetName":"coin",
+                             "domainId":"test",
+                             "precision":2
+                          }
+                       },
+                       {
+                          "createAsset":{
+                             "assetName":"fedcoin",
+                             "domainId":"test",
+                             "precision":2
                           }
                        },
                        {
                           "createAccount":{
                              "accountName":"admin",
-                             "domainId":"public",
+                             "domainId":"test",
                              "publicKey":"313a07e6384776ed95447710d15e59148473ccfc052a681317a72a69f2a49910"
                           }
                        },
                        {
+                          "createAccount":{
+                             "accountName":"test",
+                             "domainId":"test",
+                             "publicKey":"716fe505f69f18511a1b083915aa9ff73ef36e6688199f3959750db38b8f4bfc"
+                          }
+                       },
+                       {
                           "appendRole":{
-                             "accountId":"admin@public",
+                             "accountId":"admin@test",
                              "roleName":"admin"
                           }
                        },
                        {
                           "appendRole":{
-                             "accountId":"admin@public",
+                             "accountId":"admin@test",
                              "roleName":"money_creator"
                           }
                        }
