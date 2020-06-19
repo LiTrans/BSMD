@@ -1,5 +1,5 @@
 # Reference
-Code of the paper submitted to the USENIX summer call 
+Code of the paper submitted to the [USENIX summer call](https://www.usenix.org/conference/usenixsecurity21) 
 
 **Untargeted Poisoning Attack Detection via Blockchain in Federated Learning** by Ranwa Al Mallah, David López,
 Bilal Farooq and Ali Yazdizadeh
