@@ -6,12 +6,12 @@ Bilal Farooq and Ali Yazdizadeh
 
 # Summary
 This experiment runs targeted and untargetted attacks on a Federated Learning (FL) process 
-with up to 20 nodes, 1 chief and 19 *workers*. 
+with up to 20 nodes, 1 *chief* and 19 *workers*. 
 The experiment follows the next steps.
-1. The chief node opens a connection socket and send the trained model to the *workers* nodes 
-2. The *worker* nodes re-train the model with their local data and send the results to the chief node
+1. The *chief* node opens a connection socket and send the trained model to the *workers* nodes 
+2. The *worker* nodes re-train the model with their local data and send the results to the *chief* node
 3. At a designated EPOCH malicious *workers* send targeted or untargetted attacks
-3. The chief node averages the results (including the malicious model) and send the average to all *workers*
+3. The *chief* node averages the results (including the malicious model) and send the average to all *workers*
 4. A defense mechanism called REALLY!? algorithm may be used to defend the FL from being poisoned 
 
 All transactions are recorded in the BSMD and we use sockets for p2p data transfers. 
