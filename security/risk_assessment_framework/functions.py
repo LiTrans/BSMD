@@ -1,10 +1,14 @@
 
 
-def threats_occurrence_probability(actor_capacity, actor_opportunity, actor_motivation):
-    probability = actor_capacity + actor_opportunity + actor_motivation
-    return probability
+def get_threats_occurrence_probability(threats):
+    threats['un-normalized_probability'] = threats.apply(lambda row: row.capacity + row.opportunity + row.motivation,
+                                                         axis=1)
+    return threats
 
 
-def combined_risk_assessment(max_probability_per_attack, attack_goal_impact):
-    risk = attack_goal_impact * max_probability_per_attack
-    return risk
+def get_combined_risk_assessment(threats, impact_by_attack, attack_goal, scenario, impact):
+    p_r_max = threats.query('attack_goal==@attack_goal and scenario==@scenario')['un-normalized_probability'].max()
+    i_m = impact_by_attack.query('attack_goals==@attack_goal')[impact]
+    combined_risk_assessment = i_m * p_r_max
+    return combined_risk_assessment
+
