@@ -70,8 +70,11 @@ def get_risk_characterization_table(threats, impact_by_attack):
 
     with open('supporting_files/combined_risk_assessment_table.csv', 'w', newline='') as file:
         writer = csv.writer(file)
-        writer.writerow(["Attack Goal", "Scenario", "Monetary", "Risk", "Privacy", "Risk", "Integrity", "Risk",
-                         "Trust", "Risk"])
+        writer.writerow(["Attack Goal", "Scenario", "PrMax",
+                         "Impact Monetary", "Monetary", "Monetary Risk",
+                         "Impact Privacy", "Privacy", "Privacy Risk",
+                         "Impact Integrity", "Integrity", "Integrity Risk",
+                         "Impact Trust", "Trust", "Trust Risk"])
         for attack_goal in attack_goals:
             for scenario in scenarios:
                 row = []
@@ -81,10 +84,12 @@ def get_risk_characterization_table(threats, impact_by_attack):
                     continue
                 row.append(attack_goal)
                 row.append(scenario)
+                row.append(p_r_max)
                 for impact in impacts:
                     i_m = impact_by_attack.query('attack_goals==@attack_goal')[impact]
                     combined_risk_assessment = i_m * p_r_max
                     risk = get_risk_characterization(combined_risk_assessment.iloc[0])
+                    row.append(i_m.iloc[0])
                     row.append(combined_risk_assessment.iloc[0])
                     row.append(risk)
                 writer.writerow(row)
