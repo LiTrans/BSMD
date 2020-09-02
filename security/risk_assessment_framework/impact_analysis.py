@@ -121,7 +121,7 @@ G5_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
 fig1.text(0.075, 0.5, 'Combined risk assessment', rotation="vertical", va="center", fontsize=18)
 fig1.text(0.5, 0.075 , 'Scenarios', va="center", fontsize=18)
-plt.savefig("supporting_files/risk_assessment.png", dpi=300)
+plt.savefig("supporting_files/risk_assessment.png", dpi=300, bbox_inches = 'tight', pad_inches = 0.05)
 
 
 
