@@ -22,7 +22,7 @@ print("The combined risk assessment is {}, {} the risk".format(combined_risk_ass
 # Create the risk characterization table for all attack goals at all scenarios and impacts
 get_risk_characterization_table(threats, impact_by_attack)
 
-goals = pd.read_csv("supporting_files/combined_risk_assessment_table.csv")
+goals = pd.read_csv("supporting_files/combined_risk_assessment_table.csv", usecols=(0,1,4,7,10,13))
 G1 = goals.loc[goals['Attack Goal'] == 'G1']
 G2 = goals.loc[goals['Attack Goal'] == 'G2']
 G3 = goals.loc[goals['Attack Goal'] == 'G3']
@@ -32,11 +32,10 @@ G5 = goals.loc[goals['Attack Goal'] == 'G5']
 fig1 = plt.figure(figsize=(15, 13))
 gs = gridspec.GridSpec(3, 3, width_ratios=[4, 4, 5])
 gs.update(wspace=0.05, hspace=0.25)
+
 # G1
-
-
 f1_ax1 = plt.subplot(gs[0, :-2])
-G1_ax = G1.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], width=.8, ax=f1_ax1)
+G1_ax = G1.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax1)
 G1_ax.set_ylim([0, 50])
 x = np.arange(-1,10,0.1)
 negligible = 12
@@ -45,15 +44,14 @@ undesirable = 35
 unacceptable = 50
 G1_ax.set_title('G1', fontsize=13)
 plt.xticks(range(0, len(G1['Scenario'])), G1['Scenario'], rotation=0)
-G1_ax.fill_between(x, unacceptable, color='r', alpha=0.6)
-G1_ax.fill_between(x, undesirable, color='orange', alpha=0.6)
-G1_ax.fill_between(x, acceptable, color='yellow', alpha=0.6)
-G1_ax.fill_between(x, negligible, color='g', alpha=0.6)
-
+G1_ax.fill_between(x, unacceptable, color='r')
+G1_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
+G1_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
+G1_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
 # G2
 f1_ax2 = plt.subplot(gs[0, 1:-1])
-G2_ax = G2.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], width=.8, ax=f1_ax2)
+G2_ax = G2.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax2)
 G2_ax.set_ylim([0, 50])
 x = np.arange(-1,10,0.1)
 negligible = 12
@@ -64,14 +62,14 @@ G2_ax.set_title('G2', fontsize=13)
 plt.xticks(range(0, len(G2['Scenario'])), G2['Scenario'], rotation=0)
 G2_ax.tick_params(labelleft=False)
 G2_ax.get_legend().remove()
-G2_ax.fill_between(x, unacceptable, color='r', alpha=0.6)
-G2_ax.fill_between(x, undesirable, color='orange', alpha=0.6)
-G2_ax.fill_between(x, acceptable, color='yellow', alpha=0.6)
-G2_ax.fill_between(x, negligible, color='g', alpha=0.6)
+G2_ax.fill_between(x, unacceptable, color='r')
+G2_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
+G2_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
+G2_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
-#
+#G3
 f1_ax3 = plt.subplot(gs[0, 2:])
-G3_ax = G3.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], width=.8, ax=f1_ax3)
+G3_ax = G3.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax3)
 G3_ax.set_ylim([0, 50])
 x = np.arange(-1,10,0.1)
 negligible = 12
@@ -82,13 +80,14 @@ G3_ax.set_title('G3', fontsize=13)
 plt.xticks(range(0, len(G3['Scenario'])), G3['Scenario'], rotation=0)
 G3_ax.tick_params(labelleft=False)
 G3_ax.get_legend().remove()
-G3_ax.fill_between(x, unacceptable, color='r', alpha=0.6)
-G3_ax.fill_between(x, undesirable, color='orange', alpha=0.6)
-G3_ax.fill_between(x, acceptable, color='yellow', alpha=0.6)
-G3_ax.fill_between(x, negligible, color='g', alpha=0.6)
+G3_ax.fill_between(x, unacceptable, color='r')
+G3_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
+G3_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
+G3_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
+# G4
 f1_ax4 = plt.subplot(gs[1, :])
-G4_ax = G4.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], width=.8, ax=f1_ax4)
+G4_ax = G4.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax4)
 G4_ax.set_ylim([0, 50])
 x = np.arange(-1,22,0.1)
 negligible = 12
@@ -98,13 +97,14 @@ unacceptable = 50
 G4_ax.set_title('G4', fontsize=13)
 plt.xticks(range(0, len(G4['Scenario'])), G4['Scenario'], rotation=0)
 G4_ax.get_legend().remove()
-G4_ax.fill_between(x, unacceptable, color='r', alpha=0.6)
-G4_ax.fill_between(x, undesirable, color='orange', alpha=0.6)
-G4_ax.fill_between(x, acceptable, color='yellow', alpha=0.6)
-G4_ax.fill_between(x, negligible, color='g', alpha=0.6)
+G4_ax.fill_between(x, unacceptable, color='r')
+G4_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
+G4_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
+G4_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
+# G5
 f1_ax5 = plt.subplot(gs[2, :])
-G5_ax = G5.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], width=.8, ax=f1_ax5)
+G5_ax = G5.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax5)
 G5_ax.set_ylim([0, 50])
 x = np.arange(-1,22,0.1)
 negligible = 12
@@ -114,10 +114,10 @@ unacceptable = 50
 G5_ax.set_title('G5', fontsize=13)
 plt.xticks(range(0, len(G4['Scenario'])), G4['Scenario'], rotation=0)
 G5_ax.get_legend().remove()
-G5_ax.fill_between(x, unacceptable, color='r', alpha=0.6)
-G5_ax.fill_between(x, undesirable, color='orange', alpha=0.6)
-G5_ax.fill_between(x, acceptable, color='yellow', alpha=0.6)
-G5_ax.fill_between(x, negligible, color='g', alpha=0.6)
+G5_ax.fill_between(x, unacceptable, color='r')
+G5_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
+G5_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
+G5_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
 fig1.text(0.075, 0.5, 'Combined risk assessment', rotation="vertical", va="center", fontsize=18)
 fig1.text(0.5, 0.075 , 'Scenarios', va="center", fontsize=18)
