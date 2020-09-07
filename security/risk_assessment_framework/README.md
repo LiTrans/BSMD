@@ -22,5 +22,5 @@ The [impact analysis](impact_analysis.py) script has three main procedures:
 scenario
 ## Authors
 * **Ranwa Al Mallah** 
-* **Bilal Farooq** [billjee](https://github.com/billjee/)
 * **David López** [mitrailer](https://github.com/mitrailer)
+* **Bilal Farooq** [billjee](https://github.com/billjee/)
