@@ -42,3 +42,7 @@ python3 worker_node.py --name='worker4' --private_key=private_key_of_node --port
 ```bash
 python3 chief_node --name='chief' --private_key=private_key_of_node
 ```
+## Authors
+
+* **David Lopez** [mitrailer](https://github.com/mitrailer)
+* **Bilal Farooq** [billjee](https://github.com/billjee/)

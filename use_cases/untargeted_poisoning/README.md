@@ -62,3 +62,8 @@ python3 federated_classifier.py --is_chief=False --worker_name=worker19 --domain
 --private_key=private_key_of_node --file_X=X_Worker_20 --file_Y=Y_Worker_20
 ```
 
+## Authors
+* **Ranwa Al Mallah**
+* **David Lopez** [mitrailer](https://github.com/mitrailer)
+* **Bilal Farooq** [billjee](https://github.com/billjee/)
+* **Ali Yazdizadeh**[Ali-TRIPLab](https://github.com/Ali-TRIPLab)

@@ -63,9 +63,9 @@ def get_risk_characterization_table(threats, impact_by_attack):
     :param impact_by_attack: dataframe containing the impacts for each attack goal
     :return: Risk characterization table
     """
-    attack_goals = ['G1', 'G2', 'G3', 'G4', 'G5']
-    scenarios = ['S1', 'S2', 'S3', 'S4', 'S5', 'S6', 'S7', 'S8', 'S9', 'S10', 'S11', 'S12', 'S13', 'S14', 'S15', 'S16',
-                 'S17', 'S18', 'S19', 'S20', 'S21', 'S22']
+    attack_goals = ['G_1', 'G_2', 'G_3', 'G_4', 'G_5']
+    scenarios = ['S_1', 'S_2', 'S_3', 'S_4', 'S_5', 'S_6', 'S_7', 'S_8', 'S_9', 'S_{10}', 'S_{11}', 'S_{12}', 'S_{13}',
+                 'S_{14}', 'S_{15}', 'S_{16}', 'S_{17}', 'S_{18}', 'S_{19}', 'S_{20}', 'S_{21}', 'S_{22}']
     impacts = ['monetary', 'privacy', 'integrity', 'trust']
 
     with open('supporting_files/combined_risk_assessment_table.csv', 'w', newline='') as file:

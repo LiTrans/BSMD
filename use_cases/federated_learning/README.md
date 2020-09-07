@@ -70,4 +70,8 @@ On the worker9-computer run
 ```
 python3 federated_classifier.py --is_chief=False --worker_name=worker9  --file_X=X_Worker_10 --file_Y=Y_Worker_10
 ```
+## Authors
 
+* **David Lopez** [mitrailer](https://github.com/mitrailer)
+* **Ali Yazdizadeh**[Ali-TRIPLab](https://github.com/Ali-TRIPLab)
+* **Bilal Farooq** [billjee](https://github.com/billjee/)
