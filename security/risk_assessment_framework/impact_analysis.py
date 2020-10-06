@@ -51,14 +51,16 @@ gs.update(wspace=0.05, hspace=0.25)
 # G1
 f1_ax1 = plt.subplot(gs[0, :-2])
 G1_ax = G1.plot(kind="bar", color=['m', 'blue', 'brown', 'cyan'], edgecolor='white', width=.8, ax=f1_ax1)
+plt.legend(prop={'size': 16})
 G1_ax.set_ylim([0, 50])
 x = np.arange(-1,10,0.1)
 negligible = 12
 acceptable = 23
 undesirable = 35
 unacceptable = 50
-G1_ax.set_title(r'$G_1$', fontsize=13)
-plt.xticks(range(0, len(G1['Scenario'])),  r'$' + G1['Scenario'] + '$', rotation=0)
+G1_ax.set_title(r'$G_1$', fontsize=18)
+plt.xticks(range(0, len(G1['Scenario'])),  r'$' + G1['Scenario'] + '$', rotation=0, fontsize=15)
+plt.yticks(fontsize=15)
 G1_ax.fill_between(x, unacceptable, color='r')
 G1_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
 G1_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
@@ -73,8 +75,8 @@ negligible = 12
 acceptable = 23
 undesirable = 35
 unacceptable = 50
-G2_ax.set_title(r'$G_2$', fontsize=13)
-plt.xticks(range(0, len(G2['Scenario'])), r'$' + G2['Scenario'] + '$', rotation=0)
+G2_ax.set_title(r'$G_2$', fontsize=18)
+plt.xticks(range(0, len(G2['Scenario'])), r'$' + G2['Scenario'] + '$', rotation=0, fontsize=15)
 G2_ax.tick_params(labelleft=False)
 G2_ax.get_legend().remove()
 G2_ax.fill_between(x, unacceptable, color='r')
@@ -91,8 +93,8 @@ negligible = 12
 acceptable = 23
 undesirable = 35
 unacceptable = 50
-G3_ax.set_title(r'$G_3$', fontsize=13)
-plt.xticks(range(0, len(G3['Scenario'])), r'$' + G3['Scenario'] + '$', rotation=0)
+G3_ax.set_title(r'$G_3$', fontsize=18)
+plt.xticks(range(0, len(G3['Scenario'])), r'$' + G3['Scenario'] + '$', rotation=0, fontsize=15)
 G3_ax.tick_params(labelleft=False)
 G3_ax.get_legend().remove()
 G3_ax.fill_between(x, unacceptable, color='r')
@@ -109,8 +111,9 @@ negligible = 12
 acceptable = 23
 undesirable = 35
 unacceptable = 50
-G4_ax.set_title(r'$G_4$', fontsize=13)
-plt.xticks(range(0, len(G4['Scenario'])), r'$' + G4['Scenario'] + '$', rotation=0)
+G4_ax.set_title(r'$G_4$', fontsize=18)
+plt.xticks(range(0, len(G4['Scenario'])), r'$' + G4['Scenario'] + '$', rotation=0, fontsize=15)
+plt.yticks(fontsize=15)
 G4_ax.get_legend().remove()
 G4_ax.fill_between(x, unacceptable, color='r')
 G4_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
@@ -126,8 +129,9 @@ negligible = 12
 acceptable = 23
 undesirable = 35
 unacceptable = 50
-G5_ax.set_title(r'$G_5$', fontsize=13)
-plt.xticks(range(0, len(G5['Scenario'])), r'$' + G5['Scenario'] + '$', rotation=0)
+G5_ax.set_title(r'$G_5$', fontsize=18)
+plt.xticks(range(0, len(G5['Scenario'])), r'$' + G5['Scenario'] + '$', rotation=0, fontsize=15)
+plt.yticks(fontsize=15)
 G5_ax.get_legend().remove()
 G5_ax.fill_between(x, unacceptable, color='r')
 G5_ax.fill_between(x, undesirable, color=(0.886, 0.424, 0.031))
@@ -135,7 +139,7 @@ G5_ax.fill_between(x, acceptable, color=(1, 0.949, 0))
 G5_ax.fill_between(x, negligible, color=(0, 0.686, 0.314))
 
 fig1.text(0.075, 0.5, 'Risk assessment, ' + r'$R_T(G_i,S_j)$', rotation="vertical", va="center", fontsize=18)
-fig1.text(0.5, 0.075 , 'Scenarios, ' + r'$S_j$', va="center", fontsize=18)
+fig1.text(0.5, 0.070 , 'Scenarios, ' + r'$S_j$', va="center", fontsize=18)
 plt.savefig("supporting_files/risk_assessment.png", dpi=300, bbox_inches = 'tight', pad_inches = 0.05)
 
 
