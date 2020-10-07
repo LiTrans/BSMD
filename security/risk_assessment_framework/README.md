@@ -52,6 +52,6 @@ See page 9 in the paper
 
 
 ## Authors
-* **Ranwa Al Mallah** 
+* **Ranwa Al Mallah** [ranwaalmallah](https://github.com/ranwaalmallah)
 * **David López** [mitrailer](https://github.com/mitrailer)
 * **Bilal Farooq** [billjee](https://github.com/billjee/)
