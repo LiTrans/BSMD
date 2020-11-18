@@ -3,20 +3,7 @@ Supplementary material of the paper _Cyber-Security Risk Assessment Framework fo
 Ranwa Al Malla, David López, and Bilal Farooq. 
 
 ## Abstract
-Use of distributed ledger technologies like blockchain is becoming more common in transportation/mobility ecosystem. 
-However, cyber-security failures may occur at places where the blockchain system connects with the real world. 
-Although the majority of the vulnerabilities are based on strong assumptions, like infeasibility in cryptographic 
-primitives or in the technology development, it remains crucial to perform a risk analysis specific to the 
-transportation ecosystem. In this paper, we propose a novel risk assessment framework for blockchain applications 
-in smart mobility. As a case study, we carry out an analysis in terms of quantifying the risk associated to a 
-multi-layered Blockchain framework for Smart Mobility Data-markets (BSMD). We first construct an actor-based analysis 
-to determine the impact of the attacks. Then, a scenario-based analysis determines the probability of occurrence of 
-each threat. Finally, a combined analysis is developed to determine which attack outcomes have the highest risk. In 
-the case study of the public permissioned BSMD, the outcomes of the risk analysis highlight the highest risk factors 
-according to their impact on the victims in terms of monetary, privacy, integrity and trust. The analysis uncovers 
-specific blockchain technology security vulnerabilities in the transportation ecosystem by exposing new attack vectors. 
-The systematic risk analysis here can be used to develop possible countermeasures against cybersecurity vulnerabilities 
-in the smart mobility implementations of the blockchain technology.
+Blockchain is a digital database containing information that can be simultaneously used and shared within a large decentralized network. Blockchain carries historic immutability via linked blocks making it hard to tamper with the technology. However, a blockchain network is only as secure as its sub-systems. Cyber-security failures may occur at places where the blockchain connects with the real world, thus creating entry points that may be used by the attackers. Although the majority of the vulnerabilities of the sub-systems are based on strong assumptions, either about infeasibility in cryptographic primitives, in the characteristics of the consensus mechanism, or in the technology development, it is important to perform a risk assessment specific to the transportation ecosystem to understand the attacks, their specific impact and associated risk. In this work, we propose a novel risk assessment framework for blockchain applications in smart mobility aiming at quantifying the risk. As a case study, we analyse a multi-layered Blockchain framework for Smart Mobility Data-markets (BSMD). We first construct an actor-based analysis to determine the impact of the attacks. Then, a scenario-based analysis determines the probability of occurrence of each threat. Finally, a combined analysis is developed to determine which attack outcomes have the highest risk. The analysis uncovers specific blockchain technology security vulnerabilities in the transportation ecosystem by exposing new attack vectors. The proposed risk assessment may be used to deploy countermeasures and protect against  cyberattakcs on the blockchain network for smart mobility. 
 
 ## Pre-requisites
 1. Python 2.7 or above 
