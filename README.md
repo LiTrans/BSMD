@@ -28,6 +28,28 @@ in the [simulated annealing](use_cases/simulated_annealing) folder.
 We also present a federated learning model over the BSMD for choice modelling which is able to process distributed 
 data from different sources This example can be found in the [federated learning](use_cases/federated_learning) folder.
 
+## Scientific Publications
+
+1. BSMD Framework
+
+[López, D., & Farooq, B. (2020). A multi-layered blockchain framework for smart mobility data-markets. Transportation Research Part C: Emerging Technologies, 111, 588-615.](https://arxiv.org/abs/1906.06435)
+
+[López, D., & Farooq, B. (2018). A blockchain framework for smart mobility. In 2018 IEEE International Smart Cities Conference (ISC2) (pp. 1-7). IEEE.](https://arxiv.org/abs/1809.05785)
+
+2. Model Estimation
+
+[López, D., & Farooq, B. (2019). Privacy-Aware Distributed Mobility Choice Modelling over Blockchain. In 2019 IEEE International Smart Cities Conference (ISC2) (pp. 187-192). IEEE.](https://arxiv.org/abs/1908.03446)
+
+3. Mobility Markets
+
+[Eckert, J., López, D., Azevedo, C. L., & Farooq, B. (2020). A blockchain-based user-centric emission monitoring and trading system for multi-modal mobility. In 2020 Forum on Integrated and Sustainable Transportation Systems (FISTS) (pp. 328-334). IEEE.](https://arxiv.org/abs/1908.05629)
+
+4. Security Analysis
+
+[Mallah, R. A., & Farooq, B. (2020). Actor-based risk analysis for blockchains in smart mobility. In Proceedings of the 3rd Workshop on Cryptocurrencies and Blockchains for Distributed Systems (pp. 29-34).](https://arxiv.org/abs/2007.09098)
+
+[Mallah, R. A., López, D., & Farooq, B. (2020). Cyber-Security Risk Assessment Framework for Blockchains in Smart Mobility](https://www.researchgate.net/publication/345213304_Cyber-Security_Risk_Assessment_Framework_for_Blockchains_in_Smart_Mobility)
+
 ## Documentation
 
 Our documentation is hosted at ReadTheDocs service here: [https://bsmd.readthedocs.io](https://bsmd.readthedocs.io). 
