@@ -71,7 +71,7 @@ nodes can be find at the [Utils folder](utils).
 * **David Lopez** [mitrailer](https://github.com/mitrailer)
 * **Bilal Farooq** [billjee](https://github.com/billjee/)
 * **Ranwa Al Mallah**
-* **Ali Yazdizadeh**[Ali-TRIPLab](https://github.com/Ali-TRIPLab)
+* **Ali Yazdizadeh** [Ali-TRIPLab](https://github.com/Ali-TRIPLab)
 
 ## License
 
