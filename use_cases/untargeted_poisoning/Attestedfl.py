@@ -8,6 +8,9 @@ from scipy import stats
 
 
 def attestedfl_1(step, worker, warm_up):
+    """
+    The attestedFL_2 algorithms checks checks the euclidean distances of a worker weights vs the chief weights
+    """
     previous_step = step - 1
     n_matrix = np.load('data_test/' + worker + '/local_model_' + str(step) + '.npy', allow_pickle=True)
     global_m = np.load('data_test/global_model_' + str(previous_step) + '.npy', allow_pickle=True)
@@ -89,13 +92,15 @@ def attestedfl_2(step, worker, warm_up):
 
 
 def attestedfl_3(step, worker, warm_up):
+    """
+    For the sake of the example we consider a worker is training as follows:
+    1. Get the errors at each iteration (epoch)
+    2. Fit a logarithmic curve to the data that contains errors (y-axis) over iteration (x-axis)
+    3. If the slop of the logarithmic curve is negative or small (less than .2) the worker is training.
+       A negative o small slop means that the errors are approaching to a small number. In any other case, the worker is
+       not training
+    """
     reliable = True
-    # for the sake of the example we consider a worker is training as follows:
-    # 1. Get the errors at each iteration (epoch)
-    # 2. Fit a logarithmic curve to the data that contains errors (y-axis) over iteration (x-axis)
-    # 3. If the slop of the logarithmic curve is negative or small (less than .2) the worker is training.
-    # A negative o small slop means that the errors are approaching to a small number. In any other case, the worker is
-    # not training
     if step > warm_up:
         reliable = False
         errors_table = pd.read_csv('data_paper/logs/attestedFL-3/errors_' + worker + '.csv', header=None)
