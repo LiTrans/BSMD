@@ -32,11 +32,14 @@ import json
 from iroha_config import SSL_CONF as SC
 from iroha_config import SEND_RECEIVE_CONF as SRC
 from attacker import node_attacking_targeted, node_attacking_un_targeted
-from really_algo import really_algorithm
+from Attestedfl import attestedfl
 from random import randint
-
+np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 # import federated.iroha_config as iroha_config
 # import federated.iroha_functions as iroha_functions
+
+start_attack = 30
+attacking_workers = 1
 
 try:
     import cPickle as pickle
@@ -258,63 +261,63 @@ class _FederatedHook(tf.train.SessionRunHook):
         json_in_ledger = str(transaction_json)
         transaction = json_in_ledger.replace('"', '')
 
-        worker_names = [iroha_config.worker1_account_id, iroha_config.worker2_account_id,
-                        iroha_config.worker3_account_id, iroha_config.worker4_account_id,
-                        iroha_config.worker5_account_id, iroha_config.worker6_account_id,
-                        iroha_config.worker7_account_id, iroha_config.worker8_account_id,
-                        iroha_config.worker9_account_id]
-
-        worker = int(connection_socket.fileno()) - 10
-        if sender == 'chief':
-            if receiver == 'first':
-                start = time.time()
-                iroha_functions.set_detail_to_node(iroha_config.iroha_chief, worker_names[0],
-                                                   iroha_config.chief_private_key, 'chief_weight', transaction)
-                end = time.time()
-                logger = open('data_paper/logs/logger-ledger.txt', 'a')
-                logger.write('ledger txn: ' + str(end - start) + '\n')
-                logger.close()
-            else:
-                start = time.time()
-                iroha_functions.set_detail_to_node(iroha_config.iroha_chief, str(receiver) + '@' + iroha_config.domain_id,
-                                                   iroha_config.chief_private_key, 'chief_weight', transaction)
-                end = time.time()
-                logger = open('data_paper/logs/logger-ledger.txt', 'a')
-                logger.write('ledger txn: ' + str(end - start) + '\n')
-                logger.close()
-        else:
-            start = time.time()
-            if sender == 'worker1':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker1, iroha_config.chief_account_id,
-                                                   iroha_config.worker1_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker2':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker2, iroha_config.chief_account_id,
-                                                   iroha_config.worker2_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker3':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker3, iroha_config.chief_account_id,
-                                                   iroha_config.worker3_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker4':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker4, iroha_config.chief_account_id,
-                                                   iroha_config.worker4_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker5':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker5, iroha_config.chief_account_id,
-                                                   iroha_config.worker5_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker6':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker6, iroha_config.chief_account_id,
-                                                   iroha_config.worker6_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker7':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker7, iroha_config.chief_account_id,
-                                                   iroha_config.worker7_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker8':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker8, iroha_config.chief_account_id,
-                                                   iroha_config.worker8_private_key, str(sender) + '_weight', transaction)
-            if sender == 'worker9':
-                iroha_functions.set_detail_to_node(iroha_config.iroha_worker9, iroha_config.chief_account_id,
-                                                   iroha_config.worker9_private_key, str(sender) + '_weight', transaction)
-            end = time.time()
-            logger = open('data_paper/logs/logger-ledger-worker.txt', 'a')
-            logger.write('ledger txn: ' + str(end - start) + '\n')
-            logger.close()
+        # worker_names = [iroha_config.worker1_account_id, iroha_config.worker2_account_id,
+        #                 iroha_config.worker3_account_id, iroha_config.worker4_account_id,
+        #                 iroha_config.worker5_account_id, iroha_config.worker6_account_id,
+        #                 iroha_config.worker7_account_id, iroha_config.worker8_account_id,
+        #                 iroha_config.worker9_account_id]
+        #
+        # worker = int(connection_socket.fileno()) - 10
+        # if sender == 'chief':
+        #     if receiver == 'first':
+        #         start = time.time()
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_chief, worker_names[0],
+        #                                            iroha_config.chief_private_key, 'chief_weight', transaction)
+        #         end = time.time()
+        #         logger = open('data_paper/logs/logger-ledger.txt', 'a')
+        #         logger.write('ledger txn: ' + str(end - start) + '\n')
+        #         logger.close()
+        #     else:
+        #         start = time.time()
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_chief, str(receiver) + '@' + iroha_config.domain_id,
+        #                                            iroha_config.chief_private_key, 'chief_weight', transaction)
+        #         end = time.time()
+        #         logger = open('data_paper/logs/logger-ledger.txt', 'a')
+        #         logger.write('ledger txn: ' + str(end - start) + '\n')
+        #         logger.close()
+        # else:
+        #     start = time.time()
+        #     if sender == 'worker1':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker1, iroha_config.chief_account_id,
+        #                                            iroha_config.worker1_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker2':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker2, iroha_config.chief_account_id,
+        #                                            iroha_config.worker2_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker3':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker3, iroha_config.chief_account_id,
+        #                                            iroha_config.worker3_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker4':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker4, iroha_config.chief_account_id,
+        #                                            iroha_config.worker4_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker5':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker5, iroha_config.chief_account_id,
+        #                                            iroha_config.worker5_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker6':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker6, iroha_config.chief_account_id,
+        #                                            iroha_config.worker6_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker7':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker7, iroha_config.chief_account_id,
+        #                                            iroha_config.worker7_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker8':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker8, iroha_config.chief_account_id,
+        #                                            iroha_config.worker8_private_key, str(sender) + '_weight', transaction)
+        #     if sender == 'worker9':
+        #         iroha_functions.set_detail_to_node(iroha_config.iroha_worker9, iroha_config.chief_account_id,
+        #                                            iroha_config.worker9_private_key, str(sender) + '_weight', transaction)
+        #     end = time.time()
+        #     logger = open('data_paper/logs/logger-ledger-worker.txt', 'a')
+        #     logger.write('ledger txn: ' + str(end - start) + '\n')
+        #     logger.close()
 
         signature = hmac.new(SRC.key, serialized, SRC.hashfunction).digest()
         assert len(signature) == SRC.hashsize
@@ -399,11 +402,11 @@ class _FederatedHook(tf.train.SessionRunHook):
                     # print('Some workers could not connect')
                     break
                 try:
-                    print('SENDING Worker: ' + address[0] + ':' + str(address[1]))
+                    # print('SENDING Worker: ' + address[0] + ':' + str(address[1]))
                     # _send_np_array(arrays_to_send, connection_socket, sender, iteration, tot_workers, receiver):
                     self._send_np_array(session.run(tf.trainable_variables()), connection_socket, self._worker_name, 0,
                                         self.num_workers, 'first')
-                    print('SENT Worker {}'.format(len(users)))
+                    # print('SENT Worker {}'.format(len(users)))
                     users.append(connection_socket)
                     addresses.append(address)
                 except (ConnectionResetError, BrokenPipeError):
@@ -459,7 +462,6 @@ class _FederatedHook(tf.train.SessionRunHook):
         session = run_context.session
         if step_value % self._interval_steps == 0 and not step_value == 0:
             if self._is_chief:
-                attacker = 0
                 self._server_socket.listen(self.num_workers - 1)
                 gathered_weights = [session.run(tf.trainable_variables())]
                 # np.save('data_test/chief.npy', gathered_weights[0], allow_pickle=True)
@@ -486,11 +488,12 @@ class _FederatedHook(tf.train.SessionRunHook):
                         name, received = self._get_np_array(connection_socket)
                         np.save('data_test/' + str(name) + '/local_model_' + str(step_value) + '.npy', received,
                                 allow_pickle=True)
-                        #################################################
-                        # comment this lines and un comment the following line to stop the REALLY!? algorithm
-                        # (defense mechanism)
-                        reliable_node = really_algorithm(step_value, name)
-                        # reliable_node = true
+                        if step_value > start_attack:
+                            reliable_node = attestedfl(step_value, name)
+                        else:
+                            reliable_node = True
+                            attestedfl(step_value, name)
+                        # reliable_node = True
                         if reliable_node:
                             gathered_weights.append(received)
                             users.append(connection_socket)
@@ -503,7 +506,6 @@ class _FederatedHook(tf.train.SessionRunHook):
                             names.append(name)
                             addresses.append(address)
                             node_attacking = True
-                            attacker = attacker + 1
                             print('Worker : '
                                   + address[0] + ':' + str(address[1])
                                   + ', is not reliable')
@@ -512,7 +514,7 @@ class _FederatedHook(tf.train.SessionRunHook):
                               + address[0] + ':' + str(address[1])
                               + ', fallen worker')
                         connection_socket.close()
-                self.num_workers = len(users) + 1 - attacker
+                self.num_workers = len(users) + 1
                 rearranged_weights = []
                 # In gathered_weights, each list represents the weights of each worker.
                 # We want to gather in each list the weights of a single layer so
@@ -524,6 +526,9 @@ class _FederatedHook(tf.train.SessionRunHook):
 
                 print('Average applied '
                       + 'with {} workers, iter: {}'.format(self.num_workers, step_value))
+                # logger = open("data_paper/logs/active_workers.txt", "a")
+                # logger.write('Average applied with {} workers, iter: {}'.format(self.num_workers, step_value) + '\n')
+                # logger.close()
                 ########################################################
                 ########################################################
                 ########################################################
@@ -540,9 +545,9 @@ class _FederatedHook(tf.train.SessionRunHook):
                         self._send_np_array(rearranged_weights, user, self._worker_name, step_value, self.num_workers,
                                             names[i])
                         end = time.time()
-                        logger = open('data_paper/logs/logger-weights.txt', 'a')
-                        logger.write('send weights: ' + str(end - start) + '\n')
-                        logger.close()
+                        # logger = open('data_paper/logs/logger-weights.txt', 'a')
+                        # logger.write('send weights: ' + str(end - start) + '\n')
+                        # logger.close()
                         user.close()
                     except (ConnectionResetError, BrokenPipeError):
                         print('Fallen Worker: ' + addresses[i][0] + ':' + str(address[i][1]))
@@ -563,21 +568,26 @@ class _FederatedHook(tf.train.SessionRunHook):
                 value = session.run(tf.trainable_variables())
                 #################################################################
                 #################################################################
-                # Nodes are attacking. You can change at wich EPOCH workers start attacking
-                if step_value == 190:
-                    # if self._worker_name == 'worker1' or self._worker_name == 'worker2':
-                    if self._worker_name == 'worker1':
-                        value = node_attacking_targeted(step_value)
-                        # value = node_attacking_un_targeted(step_value)
+                # Nodes are attacking
+                if step_value > start_attack:
+                    if attacking_workers == 1:
+                        if self._worker_name == 'worker1':
+                            value = node_attacking_un_targeted()
+                    if attacking_workers == 2:
+                        if self._worker_name == 'worker1' or self._worker_name == 'worker2':
+                            value = node_attacking_un_targeted()
                 #################################################################
                 #################################################################
                 #################################################################
                 start = time.time()
+                # print('{}: The weight matrix: dimension {}, shape {}, elements {}'.
+                #       format(self._worker_name, value.ndim, value.shape, value.size))
+                # np.save('data_test/' + self._worker_name + '.npy', value, allow_pickle=True)
                 self._send_np_array(value, worker_socket, self._worker_name, step_value, self.num_workers, 'chief')
                 end = time.time()
-                logger = open('data_paper/logs/logger-weights-worker.txt', 'a')
-                logger.write('send weights: ' + str(end - start) + '\n')
-                logger.close()
+                # logger = open('data_paper/logs/logger-weights-worker.txt', 'a')
+                # logger.write('send weights: ' + str(end - start) + '\n')
+                # logger.close()
                 name, broadcasted_weights = self._get_np_array(worker_socket)
                 feed_dict = {}
                 for placeh, brweigh in zip(self._placeholders, broadcasted_weights):

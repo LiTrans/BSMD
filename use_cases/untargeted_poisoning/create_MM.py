@@ -12,3 +12,4 @@ for i in range(0, 7):
     malicious_matrix.append(matrix)
 np.save('data_test/malicious_matrix.npy', malicious_matrix, allow_pickle=True)
 print('done')
+#print(global_m)

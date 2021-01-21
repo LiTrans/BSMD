@@ -11,7 +11,7 @@ import numpy as np
 from iroha_config import CHIEF_PRIVATE_IP, CHIEF_PUBLIC_IP, BATCH_SIZE, EPOCHS, INTERVAL_STEPS, WAIT_TIME
 from time import time
 import tensorflow as tf
-
+np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 np.set_printoptions(threshold=sys.maxsize)
 
 flags = tf.app.flags
@@ -167,9 +167,14 @@ class _LoggerHook(tf.train.SessionRunHook):
                 print("Epoch {}/{} - loss: {:.4f} - acc: {:.4f}".format(int(step_value / N_BATCHES), EPOCHS,
                                                                         self._total_loss / N_BATCHES,
                                                                         self._total_acc / N_BATCHES))
-            print("Epoch {}/{} - loss: {:.4f} - acc: {:.4f}".format(int(step_value / N_BATCHES), EPOCHS,
-                                                                    self._total_loss / N_BATCHES,
-                                                                    self._total_acc / N_BATCHES))
+            else:
+                logger = open('data_paper/logs/attestedFL-3/errors_' + FLAGS.worker_name + '.csv', "a")
+                logger.write("{},{},{}".format(step_value / N_BATCHES, FLAGS.worker_name,
+                                                  self._total_loss / N_BATCHES) + '\n')
+                logger.close()
+            # print("Epoch {}/{} - loss: {:.4f} - acc: {:.4f}".format(int(step_value / N_BATCHES), EPOCHS,
+            #                                                         self._total_loss / N_BATCHES,
+            #                                                         self._total_acc / N_BATCHES))
             self._total_loss = 0
             self._total_acc = 0
 
@@ -191,3 +196,6 @@ with tf.name_scope('monitored_session'):
             mon_sess.run(train_op)
 
 end_time = time()
+
+# logger.write('Total time: ' + str(end_time - start_time) + '\n')
+# logger.close()

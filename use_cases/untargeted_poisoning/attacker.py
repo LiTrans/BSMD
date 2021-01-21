@@ -1,5 +1,6 @@
 import numpy as np
 import tensorflow as tf
+np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
 
 def node_attacking_targeted(step_value):
     file = step_value - 1
@@ -9,10 +10,15 @@ def node_attacking_targeted(step_value):
     learning_rate = 0.001
     send_malicious = ((total_workers/learning_rate)*(malicious_model - global_model)) + global_model
     print('Attack!!!!!')
+    # print(malicious_model)
+    # print(global_model)
+    # print(send_malicious)
     return send_malicious
 
-def node_attacking_un_targeted(step_value):
+
+def node_attacking_un_targeted():
     global_m = np.load('data_test/global_model_1.npy', allow_pickle=True)
+    # Create the malicious matrix
     malicious_matrix = []
     for i in range(0, 7):
         shape = global_m[i].shape
