@@ -116,5 +116,5 @@ venv.bak/
 /logger-weights.txt
 /logger-weights-worker.txt
 
-server.key
-server.pem
+/use_cases/untargeted_poisoning/server.key
+/use_cases/untargeted_poisoning/server.pem
