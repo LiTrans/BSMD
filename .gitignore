@@ -115,3 +115,6 @@ venv.bak/
 /use_cases/federated_learning/train_sets/
 /logger-weights.txt
 /logger-weights-worker.txt
+
+server.key
+server.pem
