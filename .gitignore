@@ -107,8 +107,8 @@ venv.bak/
 .idea/
 
 .npy
-.key
-.pem
+*.key
+*.pem
 /layers/communication/server.key
 /layers/communication/server.pem
 /logs_dir/
