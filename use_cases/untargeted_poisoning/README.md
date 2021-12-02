@@ -1,5 +1,4 @@
 # Reference
-Code of the paper submitted to the [IEEE Transactions on Dependable and Secure Computing](https://www.computer.org/csdl/journal/tq) 
 
 **Untargeted Poisoning Attack Detection in Federated Learning via Behavior Attestation** by 
 Ranwa Al Mallah, David López and Bilal Farooq
