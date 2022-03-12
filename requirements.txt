@@ -30,7 +30,7 @@ numpy==1.17.2
 opt-einsum==3.3.0
 packaging==19.1
 pandas==1.1.1
-Pillow==8.1.1
+Pillow==9.0.1
 pluggy==0.13.0
 plumbum==1.6.7
 protobuf==3.9.1
