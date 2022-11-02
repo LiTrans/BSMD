@@ -68,8 +68,8 @@ nodes can be find at the [Utils folder](utils).
 
 ## Authors
 
+* **Bilal Farooq (Project Lead)** [billjee](https://github.com/billjee/)
 * **David Lopez** [mitrailer](https://github.com/mitrailer)
-* **Bilal Farooq** [billjee](https://github.com/billjee/)
 * **Ranwa Al Mallah** [ranwaalmallah](https://github.com/ranwaalmallah)
 * **Ali Yazdizadeh** [Ali-TRIPLab](https://github.com/Ali-TRIPLab)
 
